@@ -4,11 +4,20 @@ using UnityEngine;
 
 public class Pathfinding : MonoBehaviour {
 
+    public Transform seeker;
+    public Transform target;
+
     HexGrid grid;
 
-    private void Awake()
+    void Awake()
     {
         grid = gameObject.GetComponent<HexGrid>();
+    }
+
+    void Update()
+    {
+        FindPath(HexCoordinates.FromOffsetCoordinates(Mathf.RoundToInt(seeker.position.x / HexMetrics.innerRad / 2f), Mathf.RoundToInt(seeker.position.z / HexMetrics.outerRad / 3f)),
+            HexCoordinates.FromOffsetCoordinates(Mathf.RoundToInt(target.position.x / HexMetrics.innerRad / 2f), Mathf.RoundToInt(target.position.z / HexMetrics.outerRad / 3f)),true,true);
     }
 
     void FindPath(HexCoordinates startPos, HexCoordinates targetPos, bool canWaterTravel, bool canLandTravel)

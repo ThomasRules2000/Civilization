@@ -32,4 +32,9 @@ public class HexType
         { typeKeys.desert,  new HexType(Color.yellow, 2,    false) },
         { typeKeys.city,    new HexType(Color.grey,   1, false) }
     };
+
+    public override string ToString()
+    {
+        return System.Enum.GetName(typeof(typeKeys), this);
+    }
 }

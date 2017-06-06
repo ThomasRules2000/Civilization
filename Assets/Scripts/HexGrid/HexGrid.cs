@@ -28,7 +28,7 @@ public class HexGrid : MonoBehaviour
         gridCanvas = GetComponentInChildren<Canvas>();
         hexMesh = GetComponentInChildren<HexMesh>();
         
-        cells = new HexCell[height, width];
+        cells = new HexCell[width,height];
 
         map = generateMap(width, height, islandSizeMin, islandSizeMax, numIslands);
 
@@ -122,18 +122,18 @@ public class HexGrid : MonoBehaviour
 
             HexCoordinates centreCoords = new HexCoordinates(centrex, centrez);
 
-            Debug.Log(centreCoords.ToString());
+            //Debug.Log(centreCoords.ToString());
 
             int numIslandTiles = Random.Range(islandSizeMin, islandSizeMax+1);
 
-            Debug.Log(numIslandTiles);
+            //Debug.Log(numIslandTiles);
 
             map[centrex, centrez] = HexType.types[HexType.typeKeys.plains];
 
             List<HexCoordinates> possibleTiles = new List<HexCoordinates>();
             List<HexCoordinates> islandTiles = new List<HexCoordinates>();
 
-            islandTiles.Add(centreCoords);
+            //islandTiles.Add(centreCoords);
 
             possibleTiles.AddRange(getNeighbours(centreCoords));
 
@@ -141,7 +141,7 @@ public class HexGrid : MonoBehaviour
             {
                 int tileIndex = Random.Range(0,possibleTiles.Count-1);
                 HexCoordinates coords = possibleTiles[tileIndex];
-                Debug.Log(coords.ToString());
+                //Debug.Log(coords.ToString());
                 possibleTiles.RemoveAt(tileIndex);
                 islandTiles.Add(coords);
                 map[coords.X, coords.Z] = HexType.types[HexType.typeKeys.plains];
@@ -161,5 +161,22 @@ public class HexGrid : MonoBehaviour
             }
         }
         return map;
+    }
+
+    public List<HexCell> path;
+    void OnDrawGizmos()
+    {
+        if(cells != null)
+        {
+            foreach(HexCell c in cells)
+            {
+                Gizmos.color = Color.white;
+                if (path != null && path.Contains(c))
+                {
+                    Gizmos.color = Color.red;
+                }
+                Gizmos.DrawCube(new Vector3((c.coordinates.X + c.coordinates.Z / 2f) * HexMetrics.innerRad * 2, 1, c.coordinates.Z * HexMetrics.outerRad * 1.5f), Vector3.one * 5);
+            }
+        }
     }
 }

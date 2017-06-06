@@ -7,10 +7,10 @@ public class HexTypeDrawer : PropertyDrawer
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         //Get type
-        HexType type = new HexType(property.FindPropertyRelative("colour").colorValue);
+        string type = property.FindPropertyRelative("HexType").ToString();
 
         //Add read only label showing coordinates
         position = EditorGUI.PrefixLabel(position, label);
-        GUI.Label(position, type.ToString());
+        GUI.Label(position, type);
     }
 }
