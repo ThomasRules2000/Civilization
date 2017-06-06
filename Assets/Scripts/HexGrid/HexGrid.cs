@@ -46,39 +46,38 @@ public class HexGrid : MonoBehaviour
         hexMesh.Triangulate(cells);
     }
 
-    public List<HexCell> getNeighbours(HexCell cell)
+    public List<HexCoordinates> getNeighbours(HexCoordinates coords)
     {
-        HexCoordinates coords = cell.coordinates;
-        List<HexCell> neighbours = new List<HexCell>();
+        List<HexCoordinates> neighbours = new List<HexCoordinates>();
 
         if (coords.X + 1 < width)
         {
-            neighbours.Add(cells[coords.X + 1, coords.Z]);
+            neighbours.Add(new HexCoordinates(coords.X + 1, coords.Z));
         }
 
         if (coords.X - 1 >= 0)
         {
-            neighbours.Add(cells[coords.X - 1, coords.Z]);
+            neighbours.Add(new HexCoordinates(coords.X - 1, coords.Z));
         }
 
         if (coords.Z + 1 < height)
         {
-            neighbours.Add(cells[coords.X, coords.Z + 1]);
+            neighbours.Add(new HexCoordinates(coords.X, coords.Z + 1));
         }
 
         if (coords.Z - 1 >= 0)
         {
-            neighbours.Add(cells[coords.X, coords.Z - 1]);
+            neighbours.Add(new HexCoordinates(coords.X, coords.Z - 1));
         }
 
         if (coords.X + 1 < width && coords.Z - 1 >= 0)
         {
-            neighbours.Add(cells[coords.X + 1, coords.Z - 1]);
+            neighbours.Add(new HexCoordinates(coords.X + 1, coords.Z - 1));
         }
 
         if (coords.X - 1 >= 0 && coords.Z + 1 < height)
         {
-            neighbours.Add(cells[coords.X - 1, coords.Z + 1]);
+            neighbours.Add(new HexCoordinates(coords.X - 1, coords.Z + 1));
         }
 
         return neighbours;
@@ -120,9 +119,10 @@ public class HexGrid : MonoBehaviour
         {
             int centrex = Random.Range(0, width);
             int centrez = Random.Range(0, height);
-            int centrey = -centrex - centrez;
 
-            Debug.Log(centrex.ToString() + ", " + centrey.ToString() + "," + centrez.ToString());
+            HexCoordinates centreCoords = new HexCoordinates(centrex, centrez);
+
+            Debug.Log(centreCoords.ToString());
 
             int numIslandTiles = Random.Range(islandSizeMin, islandSizeMax+1);
 
@@ -133,9 +133,9 @@ public class HexGrid : MonoBehaviour
             List<HexCoordinates> possibleTiles = new List<HexCoordinates>();
             List<HexCoordinates> islandTiles = new List<HexCoordinates>();
 
-            islandTiles.Add(new HexCoordinates(centrex, centrez));
+            islandTiles.Add(centreCoords);
 
-            possibleTiles.AddRange(getNeighbours(cells[centrex, centrez]).Select(x => x.coordinates).ToArray());
+            possibleTiles.AddRange(getNeighbours(centreCoords));
 
             for (int j = 0; j < numIslandTiles && possibleTiles.Count > 0; j++)
             {
@@ -146,10 +146,11 @@ public class HexGrid : MonoBehaviour
                 islandTiles.Add(coords);
                 map[coords.X, coords.Z] = HexType.types[HexType.typeKeys.plains];
 
-                List<HexCoordinates> neighbours = getNeighbours(cells[coords.X, coords.Z]).Select(x => x.coordinates).ToList();
+                List<HexCoordinates> neighbours = getNeighbours(coords);
 
-                foreach(HexCoordinates neighbour in neighbours)
+                for(int hc = 0; hc<neighbours.Count; hc++)
                 {
+                    HexCoordinates neighbour = neighbours[hc];
                     if (islandTiles.Contains(neighbour))
                     {
                         neighbours.Remove(neighbour);
