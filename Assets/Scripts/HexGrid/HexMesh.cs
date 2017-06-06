@@ -21,7 +21,7 @@ public class HexMesh : MonoBehaviour
     }
 
     //Create triangles for grid of cells
-    public void Triangulate(HexCell[] cells)
+    public void Triangulate(HexCell[,] cells)
     {
         //Clear Mesh 
         hexMesh.Clear();
@@ -29,9 +29,12 @@ public class HexMesh : MonoBehaviour
         triangles.Clear();
         colours.Clear();
 
-        for (int i = 0; i < cells.Length; i++)
+        for (int i = 0; i < cells.GetLength(0); i++)
         {
-            Triangulate(cells[i]);
+            for(int j = 0; j < cells.GetLength(1); j++)
+            {
+                Triangulate(cells[i,j]);
+            }
         }
         hexMesh.vertices = vertices.ToArray();
         hexMesh.colors = colours.ToArray();
