@@ -7,10 +7,11 @@ public class HexCell : MonoBehaviour
     public Color colour;
     public HexCoordinates coordinates;
 
-    public int gCost;
-    public int hCost;
+    public float gCost;
+    public float hCost;
+    public HexCell parent;
 
-    public int fCost
+    public float fCost
     {
         get
         {

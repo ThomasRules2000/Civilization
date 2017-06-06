@@ -5,10 +5,14 @@ using UnityEngine;
 public class HexType
 {
     public Color colour;
+    public float movementCost;
+    public bool isWater;
 
-    public HexType(Color col)
+    public HexType(Color col, float cost, bool water)
     {   
         colour = col;
+        movementCost = cost;
+        isWater = water;
     }
 
     public enum typeKeys //Allows for intellisense for dictionary
@@ -16,14 +20,16 @@ public class HexType
         plains,
         ocean,
         forest,
-        desert
+        desert,
+        city
     }
 
     public static Dictionary<typeKeys, HexType> types = new Dictionary<typeKeys, HexType>
     {
-        { typeKeys.plains,  new HexType(Color.white)  },
-        { typeKeys.ocean,   new HexType(Color.blue)   },
-        { typeKeys.forest,  new HexType(Color.green)  },
-        { typeKeys.desert,  new HexType(Color.yellow) }
+        { typeKeys.plains,  new HexType(Color.white,  2,    false) },
+        { typeKeys.ocean,   new HexType(Color.blue,   1, true)  },
+        { typeKeys.forest,  new HexType(Color.green,  4,    false) },
+        { typeKeys.desert,  new HexType(Color.yellow, 2,    false) },
+        { typeKeys.city,    new HexType(Color.grey,   1, false) }
     };
 }
