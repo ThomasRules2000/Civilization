@@ -141,7 +141,7 @@ public class HexGrid : MonoBehaviour
 
             for (int j = 0; j < numIslandTiles && possibleTiles.Count > 0; j++)
             {
-                int tileIndex = Random.Range(0,possibleTiles.Count-1);
+                int tileIndex = Random.Range(0,possibleTiles.Count);
                 HexCoordinates coords = possibleTiles[tileIndex];
                 //Debug.Log(coords.ToString());
                 possibleTiles.RemoveAt(tileIndex);

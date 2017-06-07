@@ -5,7 +5,7 @@ using UnityEngine;
 public class Pathfinding : MonoBehaviour {
 
     public Transform seeker;
-    public Transform target;
+    public HexCoordinates target;
 
     HexGrid grid;
 
@@ -17,10 +17,10 @@ public class Pathfinding : MonoBehaviour {
     void Update()
     {
         FindPath( new HexCoordinates(Mathf.RoundToInt(seeker.localPosition.x / (HexMetrics.innerRad * 2f)), Mathf.RoundToInt(seeker.localPosition.z / (HexMetrics.outerRad * 1.5f))),
-            new HexCoordinates (Mathf.RoundToInt(target.localPosition.x / (HexMetrics.innerRad * 2f)), Mathf.RoundToInt(target.localPosition.z / (HexMetrics.outerRad * 1.5f))),true,true);
+            HexCoordinates.ToOffsetCoordinates(target), true, true);
     }
 
-    void FindPath(HexCoordinates startPos, HexCoordinates targetPos, bool canWaterTravel, bool canLandTravel)
+    void FindPath(HexCoordinates startPos, HexCoordinates targetPos, bool canWaterTravel, bool canLandTravel) //A* Algorithm
     {
         //Debug.Log(targetPos.ToString());
         HexCell startNode = grid.cells[startPos.X, startPos.Z];

@@ -24,7 +24,7 @@ public class HexType
         city
     }
 
-    public static Dictionary<typeKeys, HexType> types = new Dictionary<typeKeys, HexType>
+    public static Dictionary<typeKeys, HexType> types = new Dictionary<typeKeys, HexType> //Todo - add more tile types
     {
         { typeKeys.plains,  new HexType(Color.white,  2,    false) },
         { typeKeys.ocean,   new HexType(Color.blue,   1, true)  },

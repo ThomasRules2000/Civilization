@@ -28,7 +28,7 @@ public struct HexCoordinates
         this.z = z;
     }
 
-    public static HexCoordinates FromOffsetCoordinates(int x, int z)
+    public static HexCoordinates FromOffsetCoordinates(int x, int z) //Calculates hex coords from array pos
     {
         return new HexCoordinates(x - z / 2, z);
     }
@@ -36,16 +36,6 @@ public struct HexCoordinates
     public static HexCoordinates FromOffsetCoordinates(HexCoordinates coords)
     {
         return new HexCoordinates(coords.X - (coords.Z) / 2, coords.Z);
-    }
-
-    public static List<HexCoordinates> FromOffsetCoordinates(List<HexCoordinates> list)
-    {
-        List<HexCoordinates> returnList = new List<HexCoordinates>();
-        foreach (HexCoordinates coords in list)
-        {
-            returnList.Add(new HexCoordinates(coords.X - (coords.Z) / 2, coords.Z));
-        }
-        return returnList;
     }
 
     public static HexCoordinates ToOffsetCoordinates(int x, int z)
@@ -56,6 +46,37 @@ public struct HexCoordinates
     public static HexCoordinates ToOffsetCoordinates(HexCoordinates coords)
     {
         return new HexCoordinates(coords.X + (coords.Z / 2), coords.Z);
+    }
+
+    public static HexCoordinates FromPosition(Vector3 pos) //Get hex coords at position
+    {
+        float x = pos.x / (HexMetrics.innerRad * 2f);
+        float y = -x;
+        float offset = pos.z / (HexMetrics.outerRad * 3f);
+        x -= offset;
+        y -= offset;
+
+        int iX = Mathf.RoundToInt(x);
+        int iY = Mathf.RoundToInt(y);
+        int iZ = Mathf.RoundToInt(-x - y);
+
+        if (iX + iY + iZ != 0) //Rounding Errors near the edge of cells, so reconstruct wrong value from other 2
+        {
+            float dX = Mathf.Abs(x - iX);
+            float dY = Mathf.Abs(y - iY);
+            float dZ = Mathf.Abs(-x - y - iZ);
+
+            if (dX > dY && dX > dZ)
+            {
+                iX = -iY - iZ;
+            }
+            else if (dZ > dY)
+            {
+                iZ = -iX - iY;
+            }
+        }
+
+        return new HexCoordinates(iX, iZ);
     }
 
     public override string ToString()
