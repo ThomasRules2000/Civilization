@@ -22,7 +22,7 @@ public class Pathfinding : MonoBehaviour {
 
     void FindPath(HexCoordinates startPos, HexCoordinates targetPos, bool canWaterTravel, bool canLandTravel)
     {
-        Debug.Log(targetPos.ToString());
+        //Debug.Log(targetPos.ToString());
         HexCell startNode = grid.cells[startPos.X, startPos.Z];
         HexCell targetNode = grid.cells[targetPos.X, targetPos.Z];
 
@@ -54,7 +54,7 @@ public class Pathfinding : MonoBehaviour {
 
             foreach(HexCoordinates neighbourCoords in (grid.getNeighbours(currentNode.coordinates)))
             {
-                Debug.Log("Neighbour: " + neighbourCoords.ToString());
+                //Debug.Log("Neighbour: " + neighbourCoords.ToString());
                 HexCoordinates neighbourOffsetCoords = HexCoordinates.ToOffsetCoordinates(neighbourCoords);
                 HexCell neighbour = grid.cells[neighbourOffsetCoords.X, neighbourOffsetCoords.Z];
                 if(((!canWaterTravel && neighbour.Type.isWater || !canLandTravel && !neighbour.Type.isWater) && !(neighbour.Type == HexType.types[HexType.typeKeys.city])) || closedSet.Contains(neighbour))
