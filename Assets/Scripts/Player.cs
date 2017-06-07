@@ -14,7 +14,7 @@ public class Player : MonoBehaviour {
     // Update is called once per frame
     void Update ()
     {
-        if (Input.GetMouseButton(1))
+        if (Input.GetMouseButtonUp(1))
         {
             HandleInput();
         }
@@ -36,5 +36,6 @@ public class Player : MonoBehaviour {
         HexCoordinates coords = HexCoordinates.FromPosition(pos);
         Debug.Log("Touched " + coords.ToString());
         pathfinding.target = coords;
+        pathfinding.UpdatePath();
     }
 }
