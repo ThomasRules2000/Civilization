@@ -34,7 +34,7 @@ public class HexGrid : MonoBehaviour
 
         for (int x = 0; x < width; x++)
         {
-            for (int z = 0; z < width; z++)
+            for (int z = 0; z < height; z++)
             {
                 CreateCell(x, z, map[x,z]);
             }
@@ -48,34 +48,36 @@ public class HexGrid : MonoBehaviour
 
     public List<HexCoordinates> getNeighbours(HexCoordinates coords)
     {
+        HexCoordinates offsetCoords = HexCoordinates.ToOffsetCoordinates(coords);
+
         List<HexCoordinates> neighbours = new List<HexCoordinates>();
 
-        if (coords.X + 1 < width)
+        if (offsetCoords.X + 1 < width)
         {
             neighbours.Add(new HexCoordinates(coords.X + 1, coords.Z));
         }
 
-        if (coords.X - 1 >= 0)
+        if (offsetCoords.X - 1 >= 0)
         {
             neighbours.Add(new HexCoordinates(coords.X - 1, coords.Z));
         }
 
-        if (coords.Z + 1 < height)
+        if (offsetCoords.Z + 1 < height)
         {
             neighbours.Add(new HexCoordinates(coords.X, coords.Z + 1));
         }
 
-        if (coords.Z - 1 >= 0)
+        if (offsetCoords.Z - 1 >= 0)
         {
             neighbours.Add(new HexCoordinates(coords.X, coords.Z - 1));
         }
 
-        if (coords.X + 1 < width && coords.Z - 1 >= 0)
+        if (offsetCoords.X + 1 < width && offsetCoords.Z - 1 >= 0)
         {
             neighbours.Add(new HexCoordinates(coords.X + 1, coords.Z - 1));
         }
 
-        if (coords.X - 1 >= 0 && coords.Z + 1 < height)
+        if (offsetCoords.X - 1 >= 0 && offsetCoords.Z + 1 < height)
         {
             neighbours.Add(new HexCoordinates(coords.X - 1, coords.Z + 1));
         }

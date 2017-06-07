@@ -1,4 +1,7 @@
 ﻿using UnityEngine;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 
 //Cube Coordinates
 [System.Serializable]
@@ -27,7 +30,32 @@ public struct HexCoordinates
 
     public static HexCoordinates FromOffsetCoordinates(int x, int z)
     {
-        return new HexCoordinates(x -z/2, z);
+        return new HexCoordinates(x - z / 2, z);
+    }
+
+    public static HexCoordinates FromOffsetCoordinates(HexCoordinates coords)
+    {
+        return new HexCoordinates(coords.X - (coords.Z) / 2, coords.Z);
+    }
+
+    public static List<HexCoordinates> FromOffsetCoordinates(List<HexCoordinates> list)
+    {
+        List<HexCoordinates> returnList = new List<HexCoordinates>();
+        foreach (HexCoordinates coords in list)
+        {
+            returnList.Add(new HexCoordinates(coords.X - (coords.Z) / 2, coords.Z));
+        }
+        return returnList;
+    }
+
+    public static HexCoordinates ToOffsetCoordinates(int x, int z)
+    {
+        return new HexCoordinates(x + z / 2, z);
+    }
+
+    public static HexCoordinates ToOffsetCoordinates(HexCoordinates coords)
+    {
+        return new HexCoordinates(coords.X + (coords.Z / 2), coords.Z);
     }
 
     public override string ToString()
