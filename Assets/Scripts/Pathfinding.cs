@@ -41,7 +41,7 @@ public class Pathfinding : MonoBehaviour {
 
             for(int i = 1; i < openSet.Count; i++)
             {
-                if (openSet[i].fCost < currentNode.fCost || openSet[i].fCost == currentNode.fCost && openSet[i].hCost < currentNode.hCost)
+                if (openSet[i].fCost < currentNode.fCost || (openSet[i].fCost == currentNode.fCost && openSet[i].hCost < currentNode.hCost))
                 {
                     currentNode = openSet[i];
                 }
@@ -59,7 +59,7 @@ public class Pathfinding : MonoBehaviour {
             foreach(HexCoordinates neighbourCoords in (grid.getNeighbours(currentNode.coordinates)))
             {
                 //Debug.Log("Neighbour: " + neighbourCoords.ToString());
-                HexCoordinates neighbourOffsetCoords = HexCoordinates.ToOffsetCoordinates(neighbourCoords);
+                HexCoordinates neighbourOffsetCoords = (HexCoordinates.ToOffsetCoordinates(neighbourCoords));
                 HexCell neighbour = grid.cells[neighbourOffsetCoords.X, neighbourOffsetCoords.Z];
                 if(((!canWaterTravel && neighbour.Type.isWater || !canLandTravel && !neighbour.Type.isWater) && !(neighbour.Type == HexType.types[HexType.typeKeys.city])) || closedSet.Contains(neighbour))
                 {
