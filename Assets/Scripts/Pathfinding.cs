@@ -6,6 +6,7 @@ public class Pathfinding : MonoBehaviour {
 
     public Transform seeker;
     public HexCoordinates target;
+    public int landToWaterCost = 2;
 
     Seeker seekerScript;
     HexGrid grid;
@@ -66,6 +67,11 @@ public class Pathfinding : MonoBehaviour {
                 }
 
                 float newMovementCost = currentNode.gCost + neighbour.Type.movementCost;
+                if(currentNode.Type.isWater != neighbour.Type.isWater)
+                {
+                    newMovementCost += landToWaterCost;
+                }
+
                 if (newMovementCost < neighbour.gCost || !openSet.Contains(neighbour))
                 {
                     neighbour.gCost = newMovementCost;
