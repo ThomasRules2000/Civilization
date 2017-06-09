@@ -40,7 +40,7 @@ public class Player : MonoBehaviour {
     {
         pos = transform.InverseTransformPoint(pos);
         HexCoordinates coords = (HexCoordinates.FromPosition(pos));
-        Debug.Log("Touched " + coords.ToString());
+        //Debug.Log("Touched " + coords.ToString());
         pathfinding.target = coords;
         pathfinding.UpdatePath();
     }
