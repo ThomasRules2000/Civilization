@@ -146,6 +146,10 @@ public class HexGrid : MonoBehaviour
                 //Debug.Log(coords.ToString());
                 possibleTiles.RemoveAt(tileIndex);
                 islandTiles.Add(coords);
+                if (coords.X >= width || coords.X < 0 || coords.Z >= height || coords.Z < 0)
+                {
+                    continue;
+                }
                 map[coords.X, coords.Z] = HexType.types[HexType.typeKeys.plains];
 
                 List<HexCoordinates> neighbours = getNeighbours(coords);

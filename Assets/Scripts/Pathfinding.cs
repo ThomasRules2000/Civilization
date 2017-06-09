@@ -8,13 +8,11 @@ public class Pathfinding : MonoBehaviour {
     public HexCoordinates target;
     public int landToWaterCost = 2;
 
-    Seeker seekerScript;
     HexGrid grid;
 
     void Awake()
     {
         grid = gameObject.GetComponent<HexGrid>();
-        seekerScript = seeker.GetComponent<Seeker>();
     }
 
     public void UpdatePath()
@@ -59,6 +57,11 @@ public class Pathfinding : MonoBehaviour {
             {
                 //Debug.Log("Neighbour: " + neighbourCoords.ToString());
                 HexCoordinates neighbourOffsetCoords = (HexCoordinates.ToOffsetCoordinates(neighbourCoords));
+                //Debug.Log(neighbourCoords.ToString() + " ==> " + neighbourOffsetCoords.ToString());
+                if (neighbourOffsetCoords.X >= grid.width || neighbourOffsetCoords.X < 0 || neighbourOffsetCoords.Z >= grid.height || neighbourOffsetCoords.Z < 0)
+                {
+                    continue;
+                }
                 HexCell neighbour = grid.cells[neighbourOffsetCoords.X, neighbourOffsetCoords.Z];
                 if(((!canWaterTravel && neighbour.Type.isWater || !canLandTravel && !neighbour.Type.isWater) && !(neighbour.Type == HexType.types[HexType.typeKeys.city])) || closedSet.Contains(neighbour))
                 {
@@ -104,6 +107,6 @@ public class Pathfinding : MonoBehaviour {
 
     float GetDistance(HexCoordinates nodeA, HexCoordinates nodeB)
     {
-        return Mathf.Max(Mathf.Abs(nodeA.X - nodeB.X), Mathf.Abs(nodeA.Y - nodeB.Y), Mathf.Abs(nodeA.Z - nodeB.Z));
+        return Mathf.Sqrt(((nodeA.X - nodeB.X) * (nodeA.X - nodeB.X)) + (nodeA.Y - nodeB.Y) * (nodeA.Y - nodeB.Y) + (nodeA.Z - nodeB.Z) * (nodeA.Z - nodeB.Z));
     }
 }
