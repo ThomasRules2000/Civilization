@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class Player : MonoBehaviour {
 
+    public Camera mainCamera;
+    public float zoomSpeed = 5000;
+    public float maxZoomedOut = 500;
+    public float maxZoomedIn = 50;
+
     Pathfinding pathfinding;
     Seeker seeker;
 
@@ -23,6 +28,24 @@ public class Player : MonoBehaviour {
         {
             seeker.moveSeeker = false;
             HandleInput();
+        }
+        else
+        {
+            float d = Input.GetAxis("Mouse ScrollWheel");
+            if (d > 0f)
+            {
+                if (mainCamera.transform.position.y - zoomSpeed*Time.deltaTime > maxZoomedIn)
+                {
+                    mainCamera.transform.Translate(Vector3.Slerp(transform.position, new Vector3(transform.position.x, transform.position.y - zoomSpeed, transform.position.z), Time.deltaTime),Space.World);
+                }
+            }
+            else if (d < 0f)
+            {
+                if (mainCamera.transform.position.y + zoomSpeed*Time.deltaTime < maxZoomedOut)
+                {
+                    mainCamera.transform.Translate(Vector3.Slerp(transform.position, new Vector3(transform.position.x, transform.position.y + zoomSpeed, transform.position.z), Time.deltaTime),Space.World);
+                }
+            }
         }
 	}
 
