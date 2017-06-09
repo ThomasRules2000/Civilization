@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HexCell : MonoBehaviour
+public class HexCell : MonoBehaviour, IHeapItem<HexCell>
 {
     public Color colour;
     public HexCoordinates coordinates;
@@ -10,6 +10,7 @@ public class HexCell : MonoBehaviour
     public float gCost;
     public float hCost;
     public HexCell parent;
+    int heapIndex;
 
     public float fCost
     {
@@ -30,5 +31,27 @@ public class HexCell : MonoBehaviour
             _type = value;
             colour = value.colour;
         }
+    }
+
+    public int HeapIndex
+    {
+        get
+        {
+            return heapIndex;
+        }
+        set
+        {
+            heapIndex = value;
+        }
+    }
+
+    public int CompareTo(HexCell toCompare)
+    {
+        int compare = fCost.CompareTo(toCompare.fCost);
+        if (compare == 0)
+        {
+            compare = hCost.CompareTo(toCompare.hCost);
+        }
+        return -compare;
     }
 }

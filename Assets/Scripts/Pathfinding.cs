@@ -27,24 +27,14 @@ public class Pathfinding : MonoBehaviour {
         HexCell startNode = grid.cells[startPos.X, startPos.Z];
         HexCell targetNode = grid.cells[targetPos.X, targetPos.Z];
 
-        List<HexCell> openSet = new List<HexCell>();
+        Heap<HexCell> openSet = new Heap<HexCell>(grid.MaxSize);
         HashSet<HexCell> closedSet = new HashSet<HexCell>();
 
         openSet.Add(startNode);
 
         while (openSet.Count > 0)
         {
-            HexCell currentNode = openSet[0];
-
-            for(int i = 1; i < openSet.Count; i++)
-            {
-                if (openSet[i].fCost < currentNode.fCost || (openSet[i].fCost == currentNode.fCost && openSet[i].hCost < currentNode.hCost))
-                {
-                    currentNode = openSet[i];
-                }
-            }
-
-            openSet.Remove(currentNode);
+            HexCell currentNode = openSet.RemoveFirst();
             closedSet.Add(currentNode);
 
             if(currentNode == targetNode)
@@ -83,6 +73,10 @@ public class Pathfinding : MonoBehaviour {
                     if (!openSet.Contains(neighbour))
                     {
                         openSet.Add(neighbour);
+                    }
+                    else
+                    {
+                        openSet.UpdateItem(neighbour);
                     }
                 }
             }

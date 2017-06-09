@@ -46,6 +46,14 @@ public class HexGrid : MonoBehaviour
         hexMesh.Triangulate(cells);
     }
 
+    public int MaxSize
+    {
+        get
+        {
+            return width * height;
+        }
+    }
+
     public List<HexCoordinates> getNeighbours(HexCoordinates coords)
     {
         HexCoordinates offsetCoords = HexCoordinates.ToOffsetCoordinates(coords);
