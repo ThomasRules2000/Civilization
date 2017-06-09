@@ -21,7 +21,6 @@ public class Pathfinding : MonoBehaviour {
     {
         FindPath( new HexCoordinates(Mathf.RoundToInt(seeker.localPosition.x / (HexMetrics.innerRad * 2f)), Mathf.RoundToInt(seeker.localPosition.z / (HexMetrics.outerRad * 1.5f))),
             HexCoordinates.ToOffsetCoordinates(target), true, true);
-        seekerScript.moveSeeker = true;
     }
 
     void FindPath(HexCoordinates startPos, HexCoordinates targetPos, bool canWaterTravel, bool canLandTravel) //A* Algorithm

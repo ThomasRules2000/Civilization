@@ -33,5 +33,13 @@ public class Seeker : MonoBehaviour {
                     new Vector3(path[0].transform.position.x, transform.position.y, path[0].transform.position.z), step);
             }                       
         }
+        else //Move to centre of cell
+        {
+            float step = movementSpeed * Time.deltaTime * 0.5f;
+            HexCoordinates currentCoords = HexCoordinates.ToOffsetCoordinates(HexCoordinates.FromPosition(transform.position));
+            Vector3 centre = grid.cells[currentCoords.X, currentCoords.Z].transform.position;
+            transform.position = Vector3.MoveTowards(transform.position,
+                new Vector3(centre.x, transform.position.y, centre.z), step);
+        }
     }
 }

@@ -5,17 +5,23 @@ using UnityEngine;
 public class Player : MonoBehaviour {
 
     Pathfinding pathfinding;
+    Seeker seeker;
 
     private void Start()
     {
         pathfinding = gameObject.GetComponent<Pathfinding>();
+        seeker = pathfinding.seeker.GetComponent<Seeker>();
     }
 
-    // Update is called once per frame
     void Update ()
     {
         if (Input.GetMouseButtonUp(1))
         {
+            seeker.moveSeeker = true;
+        }
+        else if (Input.GetMouseButton(1))
+        {
+            seeker.moveSeeker = false;
             HandleInput();
         }
 	}
@@ -33,7 +39,7 @@ public class Player : MonoBehaviour {
     void TouchCell(Vector3 pos)
     {
         pos = transform.InverseTransformPoint(pos);
-        HexCoordinates coords = HexCoordinates.FromPosition(pos);
+        HexCoordinates coords = (HexCoordinates.FromPosition(pos));
         Debug.Log("Touched " + coords.ToString());
         pathfinding.target = coords;
         pathfinding.UpdatePath();
