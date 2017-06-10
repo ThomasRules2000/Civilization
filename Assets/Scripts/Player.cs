@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Player : MonoBehaviour {
 
-    public float zoomSpeed = 1000;
+    public float zoomSpeed = 18;
+    public float panMult = 180;
     public float maxZoomedOut = 500;
     public float maxZoomedIn = 50;
     public float topRotation = 90;
@@ -45,16 +46,34 @@ public class Player : MonoBehaviour {
             //Zoom In
             if (Camera.main.transform.position.y - zoomSpeed > maxZoomedIn)
             {
-                Camera.main.transform.Translate(new Vector3(0, -zoomSpeed, zoomSpeed / (rotationStep * 40)), Space.World);
+                Vector2 camMovement = Vector2.zero;
+
+                Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+                if (Physics.Raycast(inputRay, out hit))
+                {
+                    camMovement = new Vector2((hit.point.x - Camera.main.transform.position.x) * zoomSpeed / panMult, (hit.point.z - Camera.main.transform.position.z) * zoomSpeed / panMult);
+                }
+
+                Camera.main.transform.Translate(new Vector3(camMovement.x, -zoomSpeed, camMovement.y), Space.World);
                 Camera.main.transform.rotation = Quaternion.Euler(Camera.main.transform.eulerAngles.x - rotationStep, Camera.main.transform.eulerAngles.y, Camera.main.transform.eulerAngles.z);
             }
         }
         else if (d < 0f)
         {
             //Zoom Out
+            Vector2 camMovement = Vector2.zero;
+
+            Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(inputRay, out hit))
+            {
+                camMovement = new Vector2((Camera.main.transform.position.x - hit.point.x) * zoomSpeed / panMult, (Camera.main.transform.position.z - hit.point.z) * zoomSpeed / panMult);
+            }
+
             if (Camera.main.transform.position.y + zoomSpeed < maxZoomedOut)
             {
-                Camera.main.transform.Translate(new Vector3(0, zoomSpeed, -zoomSpeed / (rotationStep * 40)), Space.World);
+                Camera.main.transform.Translate(new Vector3(camMovement.x, +zoomSpeed, camMovement.y), Space.World);
                 Camera.main.transform.rotation = Quaternion.Euler(Camera.main.transform.eulerAngles.x + rotationStep, Camera.main.transform.eulerAngles.y, Camera.main.transform.eulerAngles.z);
             }
         }
