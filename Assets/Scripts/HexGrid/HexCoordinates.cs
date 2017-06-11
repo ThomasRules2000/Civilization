@@ -79,6 +79,22 @@ public struct HexCoordinates
         return new HexCoordinates(iX, iZ);
     }
 
+    public static List<HexCoordinates> GetNeighbours(HexCoordinates coords)
+    {
+        HexCoordinates offsetCoords = HexCoordinates.ToOffsetCoordinates(coords);
+
+        List<HexCoordinates> neighbours = new List<HexCoordinates>();
+
+        neighbours.Add(new HexCoordinates(coords.X, coords.Z + 1));
+        neighbours.Add(new HexCoordinates(coords.X + 1, coords.Z));
+        neighbours.Add(new HexCoordinates(coords.X + 1, coords.Z - 1));
+        neighbours.Add(new HexCoordinates(coords.X, coords.Z - 1));
+        neighbours.Add(new HexCoordinates(coords.X - 1, coords.Z));
+        neighbours.Add(new HexCoordinates(coords.X - 1, coords.Z + 1));
+
+        return neighbours;
+    }
+
     public override string ToString()
     {
         return "(" + X.ToString() + ", " + Y.ToString() + ", " + Z.ToString() + ")";

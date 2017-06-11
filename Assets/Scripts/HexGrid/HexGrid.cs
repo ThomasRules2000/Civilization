@@ -9,12 +9,15 @@ public class HexGrid : MonoBehaviour
     public Text labelPrefab;
     Canvas gridCanvas;
 
+    public bool showCoords = true;
+
     public int width = 6;
     public int height = 6;
 
     public int islandSizeMin = 3;
     public int islandSizeMax = 5;
     public int numIslands = 1;
+    public float fractionHills = 0.2f;
 
     public HexCell cellPrefab;
 
@@ -54,45 +57,6 @@ public class HexGrid : MonoBehaviour
         }
     }
 
-    public List<HexCoordinates> getNeighbours(HexCoordinates coords)
-    {
-        HexCoordinates offsetCoords = HexCoordinates.ToOffsetCoordinates(coords);
-
-        List<HexCoordinates> neighbours = new List<HexCoordinates>();
-
-        if (offsetCoords.X + 1 < width)
-        {
-            neighbours.Add(new HexCoordinates(coords.X + 1, coords.Z));
-        }
-
-        if (offsetCoords.X - 1 >= 0)
-        {
-            neighbours.Add(new HexCoordinates(coords.X - 1, coords.Z));
-        }
-
-        if (offsetCoords.Z + 1 < height)
-        {
-            neighbours.Add(new HexCoordinates(coords.X, coords.Z + 1));
-        }
-
-        if (offsetCoords.Z - 1 >= 0)
-        {
-            neighbours.Add(new HexCoordinates(coords.X, coords.Z - 1));
-        }
-
-        if (offsetCoords.X + 1 < width && offsetCoords.Z - 1 >= 0)
-        {
-            neighbours.Add(new HexCoordinates(coords.X + 1, coords.Z - 1));
-        }
-
-        if (offsetCoords.X - 1 >= 0 && offsetCoords.Z + 1 < height)
-        {
-            neighbours.Add(new HexCoordinates(coords.X - 1, coords.Z + 1));
-        }
-
-        return neighbours;
-    }
-
     //Adds cells to array based on metrics, max width & max height
     void CreateCell(int x, int z, HexType type)
     {
@@ -115,10 +79,13 @@ public class HexGrid : MonoBehaviour
             cell.Type = HexType.types[HexType.typeKeys.ocean];
         }
 
-        Text label = Instantiate<Text>(labelPrefab);
-        label.rectTransform.SetParent(gridCanvas.transform, false);
-        label.rectTransform.anchoredPosition = new Vector2(pos.x, pos.z);
-        label.text = cell.coordinates.ToStringOnSeparateLines();
+        if (showCoords)
+        {
+            Text label = Instantiate<Text>(labelPrefab);
+            label.rectTransform.SetParent(gridCanvas.transform, false);
+            label.rectTransform.anchoredPosition = new Vector2(pos.x, pos.z);
+            label.text = cell.coordinates.ToStringOnSeparateLines();
+        }     
     }
 
     HexType[,] generateMap(int width, int height, int islandSizeMin, int islandSizeMax, int numIslands)
@@ -150,11 +117,11 @@ public class HexGrid : MonoBehaviour
             map[centrex, centrez] = HexType.types[HexType.typeKeys.plains];
 
             List<HexCoordinates> possibleTiles = new List<HexCoordinates>();
-            List<HexCoordinates> islandTiles = new List<HexCoordinates>();
+            HashSet<HexCoordinates> islandTiles = new HashSet<HexCoordinates>();
 
-            //islandTiles.Add(centreCoords);
+            islandTiles.Add(centreCoords);
 
-            possibleTiles.AddRange(getNeighbours(centreCoords));
+            possibleTiles.AddRange(HexCoordinates.GetNeighbours(centreCoords));
 
             for (int j = 0; j < numIslandTiles && possibleTiles.Count > 0; j++)
             {
@@ -170,7 +137,7 @@ public class HexGrid : MonoBehaviour
                 islandTiles.Add(coords);
                 map[coords.X, coords.Z] = HexType.types[HexType.typeKeys.plains];
 
-                List<HexCoordinates> neighbours = getNeighbours(coords);
+                List<HexCoordinates> neighbours = HexCoordinates.GetNeighbours(coords);
 
                 for(int hc = 0; hc<neighbours.Count; hc++)
                 {
@@ -185,6 +152,24 @@ public class HexGrid : MonoBehaviour
             }
             allIslandTiles.UnionWith(islandTiles);
         }
+
+        HashSet<HexCoordinates> hillTiles = new HashSet<HexCoordinates>();
+
+        for (int i = 0; i < allIslandTiles.Count * fractionHills; i++) // Hill Generation
+        {
+            int hillIndex;
+            HexCoordinates coords;
+            do
+            {
+                hillIndex = Random.Range(0, allIslandTiles.Count);
+                coords = allIslandTiles.ElementAt(hillIndex);
+            } while (hillTiles.Contains(coords));
+
+            //Debug.Log(coords.ToString());
+            map[coords.X, coords.Z] = HexType.types[HexType.typeKeys.hill];
+            hillTiles.Add(coords);
+        }
+
         return map;
     }
 

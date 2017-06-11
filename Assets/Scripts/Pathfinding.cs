@@ -35,7 +35,7 @@ public class Pathfinding : MonoBehaviour {
                 return path;
             }
 
-            foreach(HexCoordinates neighbourCoords in (grid.getNeighbours(currentNode.coordinates)))
+            foreach(HexCoordinates neighbourCoords in (HexCoordinates.GetNeighbours(currentNode.coordinates)))
             {
                 //Debug.Log("Neighbour: " + neighbourCoords.ToString());
                 HexCoordinates neighbourOffsetCoords = (HexCoordinates.ToOffsetCoordinates(neighbourCoords));

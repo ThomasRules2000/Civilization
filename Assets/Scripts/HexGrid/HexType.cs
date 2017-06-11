@@ -21,16 +21,18 @@ public class HexType
         ocean,
         forest,
         desert,
-        city
+        city,
+        hill
     }
 
     public static Dictionary<typeKeys, HexType> types = new Dictionary<typeKeys, HexType> //Todo - add more tile types
     {
-        { typeKeys.plains,  new HexType(Color.white,  2,    false) },
+        { typeKeys.plains,  new HexType(Color.green,  1, false) },
         { typeKeys.ocean,   new HexType(Color.blue,   1, true)  },
-        { typeKeys.forest,  new HexType(Color.green,  4,    false) },
-        { typeKeys.desert,  new HexType(Color.yellow, 2,    false) },
-        { typeKeys.city,    new HexType(Color.grey,   1, false) }
+        { typeKeys.forest,  new HexType(new Color(0,0.3f,0),  4, false) },
+        { typeKeys.desert,  new HexType(Color.yellow, 1, false) },
+        { typeKeys.city,    new HexType(Color.grey,   1, false) },
+        { typeKeys.hill,    new HexType(Color.green,  2, false) }
     };
 
     public override string ToString()

@@ -129,7 +129,7 @@ public class Player : MonoBehaviour {
 
     bool SelectUnit(Transform trans)
     {
-        if(unit.GetComponent<Unit>() != null)
+        if(trans.GetComponent<Unit>() != null)
         {
             unit = trans.GetComponent<Unit>();
             return true;
