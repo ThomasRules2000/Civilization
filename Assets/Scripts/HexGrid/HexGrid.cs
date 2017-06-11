@@ -125,12 +125,21 @@ public class HexGrid : MonoBehaviour
     {
         HexType[,] map = new HexType[width,height];
 
+        HashSet<HexCoordinates> allIslandTiles = new HashSet<HexCoordinates>();
+
         for(int i = 0; i < numIslands; i++)
         {
-            int centrex = Random.Range(0, width);
-            int centrez = Random.Range(0, height);
+            int centrex;
+            int centrez;
 
-            HexCoordinates centreCoords = new HexCoordinates(centrex, centrez);
+            HexCoordinates centreCoords;
+
+            do
+            {
+                centrex = Random.Range(0, width);
+                centrez = Random.Range(0, height);
+                centreCoords = new HexCoordinates(centrex, centrez);
+            } while (allIslandTiles.Contains(centreCoords));
 
             //Debug.Log(centreCoords.ToString());
 
@@ -149,15 +158,16 @@ public class HexGrid : MonoBehaviour
 
             for (int j = 0; j < numIslandTiles && possibleTiles.Count > 0; j++)
             {
-                int tileIndex = Random.Range(0,possibleTiles.Count);
-                HexCoordinates coords = possibleTiles[tileIndex];
-                //Debug.Log(coords.ToString());
-                possibleTiles.RemoveAt(tileIndex);
-                islandTiles.Add(coords);
-                if (coords.X >= width || coords.X < 0 || coords.Z >= height || coords.Z < 0)
+                int tileIndex;
+                HexCoordinates coords;
+                do
                 {
-                    continue;
-                }
+                    tileIndex = Random.Range(0, possibleTiles.Count);
+                    coords = possibleTiles[tileIndex];
+                    //Debug.Log(coords.ToString());
+                    possibleTiles.RemoveAt(tileIndex);
+                } while (coords.X >= width || coords.X < 0 || coords.Z >= height || coords.Z < 0 || allIslandTiles.Contains(coords));
+                islandTiles.Add(coords);
                 map[coords.X, coords.Z] = HexType.types[HexType.typeKeys.plains];
 
                 List<HexCoordinates> neighbours = getNeighbours(coords);
@@ -173,6 +183,7 @@ public class HexGrid : MonoBehaviour
 
                 possibleTiles.AddRange(neighbours);
             }
+            allIslandTiles.UnionWith(islandTiles);
         }
         return map;
     }
