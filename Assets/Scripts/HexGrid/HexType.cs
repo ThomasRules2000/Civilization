@@ -5,10 +5,10 @@ using UnityEngine;
 public class HexType
 {
     public Color colour;
-    public float movementCost;
+    public int movementCost;
     public bool isWater;
 
-    public HexType(Color col, float cost, bool water)
+    public HexType(Color col, int cost, bool water)
     {   
         colour = col;
         movementCost = cost;

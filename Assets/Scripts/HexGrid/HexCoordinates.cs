@@ -83,12 +83,12 @@ public struct HexCoordinates
     {
         List<HexCoordinates> neighbours = new List<HexCoordinates>();
 
-        neighbours.Add(new HexCoordinates(coords.X, coords.Z + 1));
-        neighbours.Add(new HexCoordinates(coords.X + 1, coords.Z));
-        neighbours.Add(new HexCoordinates(coords.X + 1, coords.Z - 1));
-        neighbours.Add(new HexCoordinates(coords.X, coords.Z - 1));
-        neighbours.Add(new HexCoordinates(coords.X - 1, coords.Z));
-        neighbours.Add(new HexCoordinates(coords.X - 1, coords.Z + 1));
+        neighbours.Add(new HexCoordinates(coords.X, coords.Z + 1));     //NE
+        neighbours.Add(new HexCoordinates(coords.X + 1, coords.Z));     //E
+        neighbours.Add(new HexCoordinates(coords.X + 1, coords.Z - 1)); //SE
+        neighbours.Add(new HexCoordinates(coords.X, coords.Z - 1));     //SW
+        neighbours.Add(new HexCoordinates(coords.X - 1, coords.Z));     //W
+        neighbours.Add(new HexCoordinates(coords.X - 1, coords.Z + 1)); //NW
 
         return neighbours;
     }
@@ -102,5 +102,10 @@ public struct HexCoordinates
     {
         return X.ToString() + "\n" + Y.ToString() + "\n" + Z.ToString();
     }
+}
+
+public enum HexDirection
+{
+    NE, E, SE, SW, W, NW
 }
 

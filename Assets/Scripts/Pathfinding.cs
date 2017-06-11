@@ -13,7 +13,7 @@ public class Pathfinding : MonoBehaviour {
         grid = gameObject.GetComponent<HexGrid>();
     }
 
-    public static List<HexCell> FindPath(HexCoordinates startPos, HexCoordinates targetPos, bool canWaterTravel, bool canLandTravel) //A* Algorithm
+    public static List<HexCell> FindPath(HexCoordinates startPos, HexCoordinates targetPos, bool canWaterTravel, bool canLandTravel, int tilesPerTurn) //A* Algorithm
     {
         //Debug.Log(targetPos.ToString());
         HexCell startNode = grid.cells[startPos.X, startPos.Z];
@@ -53,7 +53,7 @@ public class Pathfinding : MonoBehaviour {
                 float newMovementCost = currentNode.gCost + neighbour.Type.movementCost;
                 if(currentNode.Type.isWater != neighbour.Type.isWater)
                 {
-                    newMovementCost += landToWaterCost;
+                    newMovementCost += newMovementCost % tilesPerTurn;
                 }
 
                 if (newMovementCost < neighbour.gCost || !openSet.Contains(neighbour))

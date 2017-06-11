@@ -5,6 +5,8 @@ using UnityEngine;
 public class Unit : MonoBehaviour {
 
     public float movementSpeed = 5;
+    public int tilesPerTurn = 3;
+    public int canMoveThisTurn = 3;
     public bool moveUnit = false;
     public HexCoordinates target;
 
@@ -20,10 +22,15 @@ public class Unit : MonoBehaviour {
 
 	public void Update()
     {
-        if (path != null && path.Count != 0 && moveUnit) //Follow Path
+        if (path != null && path.Count != 0 && canMoveThisTurn > 0 && moveUnit) //Follow Path
         {
             if(transform.position.x == path[0].transform.position.x && transform.position.z == path[0].transform.position.z)
             {
+                canMoveThisTurn -= path[0].Type.movementCost;
+                if(path.Count > 1 && canMoveThisTurn > 1 && path[0].Type.isWater != path[1].Type.isWater)
+                {
+                    canMoveThisTurn = 1;
+                }
                 path.RemoveAt(0);
             }
             else
@@ -46,7 +53,12 @@ public class Unit : MonoBehaviour {
     public void UpdatePath()
     {
         path = Pathfinding.FindPath(new HexCoordinates(Mathf.RoundToInt(transform.localPosition.x / (HexMetrics.innerRad * 2f)), Mathf.RoundToInt(transform.localPosition.z / (HexMetrics.outerRad * 1.5f))),
-            HexCoordinates.ToOffsetCoordinates(target), true, true);
+            HexCoordinates.ToOffsetCoordinates(target), true, true, tilesPerTurn);
+        HexCoordinates currentCoords = HexCoordinates.ToOffsetCoordinates(HexCoordinates.FromPosition(transform.localPosition));
+        if(grid.cells[currentCoords.X, currentCoords.Z].Type.isWater != path[0].Type.isWater)
+        {
+            canMoveThisTurn = 1;
+        }
         grid.path = path;
     }
 }

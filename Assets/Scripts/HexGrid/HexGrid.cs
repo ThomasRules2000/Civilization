@@ -18,6 +18,7 @@ public class HexGrid : MonoBehaviour
     public int islandSizeMax = 5;
     public int numIslands = 1;
     public float fractionHills = 0.2f;
+    public float hillHeight = 2f;
 
     public HexCell cellPrefab;
 

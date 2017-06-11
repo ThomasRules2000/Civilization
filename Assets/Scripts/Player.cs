@@ -14,10 +14,12 @@ public class Player : MonoBehaviour {
     float rotationStep;
 
     Unit unit;
+    List<Unit> units = new List<Unit>();
 
     private void Start()
     {
         unit = GetComponentInChildren<Unit>();
+        units.AddRange(GetComponentsInChildren<Unit>());
 
         rotationStep = zoomSpeed * (topRotation-bottomRotation) / (maxZoomedOut - maxZoomedIn);
         Camera.main.transform.position = new Vector3(Camera.main.transform.position.x,maxZoomedOut,Camera.main.transform.position.z);
@@ -90,6 +92,14 @@ public class Player : MonoBehaviour {
             }
         }
 	}
+
+    public void NextTurn()
+    {
+        foreach(Unit u in units)
+        {
+            u.canMoveThisTurn = u.tilesPerTurn;
+        }
+    }
 
     bool HandleInput(inputMethods method)
     {

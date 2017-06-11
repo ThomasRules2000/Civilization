@@ -41,7 +41,7 @@
 			// Metallic and smoothness come from slider variables
 			o.Metallic = _Metallic;
 			o.Smoothness = _Glossiness;
-			o.Alpha = c.a;
+			o.Alpha = c.a * IN.colour.a;
 		}
 		ENDCG
 	}
