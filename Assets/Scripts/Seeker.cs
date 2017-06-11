@@ -6,6 +6,7 @@ public class Seeker : MonoBehaviour {
 
     public float movementSpeed = 5;
     public bool moveSeeker = false;
+    public HexCoordinates target;
 
     HexGrid grid;
     List<HexCell> path;
@@ -19,8 +20,7 @@ public class Seeker : MonoBehaviour {
 
 	public void Update()
     {
-        path = grid.path;
-        if (path != null && path.Count != 0 && moveSeeker)
+        if (path != null && path.Count != 0 && moveSeeker) //Follow Path
         {
             if(transform.position.x == path[0].transform.position.x && transform.position.z == path[0].transform.position.z)
             {
@@ -41,5 +41,12 @@ public class Seeker : MonoBehaviour {
             transform.position = Vector3.MoveTowards(transform.position,
                 new Vector3(centre.x, transform.position.y, centre.z), step);
         }
+    }
+
+    public void UpdatePath()
+    {
+        path = Pathfinding.FindPath(new HexCoordinates(Mathf.RoundToInt(transform.localPosition.x / (HexMetrics.innerRad * 2f)), Mathf.RoundToInt(transform.localPosition.z / (HexMetrics.outerRad * 1.5f))),
+            HexCoordinates.ToOffsetCoordinates(target), true, true);
+        grid.path = path;
     }
 }

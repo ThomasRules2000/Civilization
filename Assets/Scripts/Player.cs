@@ -19,7 +19,7 @@ public class Player : MonoBehaviour {
     private void Start()
     {
         pathfinding = gameObject.GetComponent<Pathfinding>();
-        seeker = pathfinding.seeker.GetComponent<Seeker>();
+        seeker = GetComponentInChildren<Seeker>();
 
         rotationStep = zoomSpeed * (topRotation-bottomRotation) / (maxZoomedOut - maxZoomedIn);
         Camera.main.transform.position = new Vector3(Camera.main.transform.position.x,maxZoomedOut,Camera.main.transform.position.z);
@@ -94,7 +94,7 @@ public class Player : MonoBehaviour {
         pos = transform.InverseTransformPoint(pos);
         HexCoordinates coords = (HexCoordinates.FromPosition(pos));
         //Debug.Log("Touched " + coords.ToString());
-        pathfinding.target = coords;
-        pathfinding.UpdatePath();
+        seeker.target = coords;
+        seeker.UpdatePath();
     }
 }

@@ -4,24 +4,16 @@ using UnityEngine;
 
 public class Pathfinding : MonoBehaviour {
 
-    public Transform seeker;
-    public HexCoordinates target;
-    public int landToWaterCost = 2;
+    public static int landToWaterCost = 2;
 
-    HexGrid grid;
+    static HexGrid grid;
 
     void Awake()
     {
         grid = gameObject.GetComponent<HexGrid>();
     }
 
-    public void UpdatePath()
-    {
-        FindPath( new HexCoordinates(Mathf.RoundToInt(seeker.localPosition.x / (HexMetrics.innerRad * 2f)), Mathf.RoundToInt(seeker.localPosition.z / (HexMetrics.outerRad * 1.5f))),
-            HexCoordinates.ToOffsetCoordinates(target), true, true);
-    }
-
-    void FindPath(HexCoordinates startPos, HexCoordinates targetPos, bool canWaterTravel, bool canLandTravel) //A* Algorithm
+    public static List<HexCell> FindPath(HexCoordinates startPos, HexCoordinates targetPos, bool canWaterTravel, bool canLandTravel) //A* Algorithm
     {
         //Debug.Log(targetPos.ToString());
         HexCell startNode = grid.cells[startPos.X, startPos.Z];
@@ -39,8 +31,8 @@ public class Pathfinding : MonoBehaviour {
 
             if(currentNode == targetNode)
             {
-                RetracePath(startNode, targetNode);
-                return;
+                List<HexCell> path = RetracePath(startNode, targetNode);
+                return path;
             }
 
             foreach(HexCoordinates neighbourCoords in (grid.getNeighbours(currentNode.coordinates)))
@@ -81,9 +73,10 @@ public class Pathfinding : MonoBehaviour {
                 }
             }
         }
+        return null; //If no path found
     }
 
-    void RetracePath(HexCell startNode, HexCell endNode)
+    static List<HexCell> RetracePath(HexCell startNode, HexCell endNode)
     {
         List<HexCell> path = new List<HexCell>();
         HexCell currentNode = endNode;
@@ -96,10 +89,10 @@ public class Pathfinding : MonoBehaviour {
 
         path.Reverse();
 
-        grid.path = path;
+        return path;
     }
 
-    float GetDistance(HexCoordinates nodeA, HexCoordinates nodeB)
+    static float GetDistance(HexCoordinates nodeA, HexCoordinates nodeB)
     {
         return Mathf.Sqrt(((nodeA.X - nodeB.X) * (nodeA.X - nodeB.X)) + (nodeA.Y - nodeB.Y) * (nodeA.Y - nodeB.Y) + (nodeA.Z - nodeB.Z) * (nodeA.Z - nodeB.Z));
     }
