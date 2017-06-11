@@ -13,6 +13,8 @@ public class Player : MonoBehaviour {
 
     float rotationStep;
 
+    HexGrid grid;
+
     Unit unit;
     List<Unit> units = new List<Unit>();
 
@@ -20,6 +22,8 @@ public class Player : MonoBehaviour {
     {
         unit = GetComponentInChildren<Unit>();
         units.AddRange(GetComponentsInChildren<Unit>());
+
+        grid = GetComponent<HexGrid>();
 
         rotationStep = zoomSpeed * (topRotation-bottomRotation) / (maxZoomedOut - maxZoomedIn);
         Camera.main.transform.position = new Vector3(Camera.main.transform.position.x,maxZoomedOut,Camera.main.transform.position.z);
@@ -39,18 +43,13 @@ public class Player : MonoBehaviour {
             HandleInput(inputMethods.doPath);
         }
 
-        if (Input.GetMouseButtonUp(0))
-        {
-            unit.moveUnit = true;
-        }
-        else if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0))
         { 
             bool success = HandleInput(inputMethods.selectUnit);
             if (success)
             {
-                unit.moveUnit = false;
-                HandleInput(inputMethods.doPath);
-            }          
+                grid.path = unit.Path;
+            }
         }
 
         //Mouse Wheel Zoom

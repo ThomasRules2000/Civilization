@@ -12,6 +12,15 @@ public class Unit : MonoBehaviour {
 
     HexGrid grid;
     List<HexCell> path;
+
+    public List<HexCell> Path
+    {
+        get
+        {
+            return path;
+        }
+    }
+
 	// Use this for initialization
 	void Start ()
     {
