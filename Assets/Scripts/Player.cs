@@ -36,7 +36,21 @@ public class Player : MonoBehaviour {
         else if (Input.GetMouseButton(1))
         {
             seeker.moveSeeker = false;
-            HandleInput();
+            HandleInput(inputMethods.doPath);
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            seeker.moveSeeker = true;
+        }
+        else if (Input.GetMouseButton(0))
+        { 
+            bool success = HandleInput(inputMethods.selectUnit);
+            if (success)
+            {
+                seeker.moveSeeker = false;
+                HandleInput(inputMethods.doPath);
+            }          
         }
 
         //Mouse Wheel Zoom
@@ -79,22 +93,50 @@ public class Player : MonoBehaviour {
         }
 	}
 
-    void HandleInput()
+    bool HandleInput(inputMethods method)
     {
         Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         if (Physics.Raycast(inputRay, out hit))
         {
-            TouchCell(hit.point);
+            if(method == inputMethods.doPath)
+            {
+                return DoPath(hit.point);
+            }
+            else if(method == inputMethods.selectUnit)
+            {
+                return SelectUnit(hit.transform);
+            }
         }
+        return false;
     }
 
-    void TouchCell(Vector3 pos)
+    public enum inputMethods
+    {
+        doPath,
+        selectUnit
+    }
+
+    bool DoPath(Vector3 pos)
     {
         pos = transform.InverseTransformPoint(pos);
         HexCoordinates coords = (HexCoordinates.FromPosition(pos));
         //Debug.Log("Touched " + coords.ToString());
         seeker.target = coords;
         seeker.UpdatePath();
+        return true;
+    }
+
+    bool SelectUnit(Transform unit)
+    {
+        if(unit.GetComponent<Seeker>() != null)
+        {
+            seeker = unit.GetComponent<Seeker>();
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
