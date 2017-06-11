@@ -14,12 +14,12 @@ public class Player : MonoBehaviour {
     float rotationStep;
 
     Pathfinding pathfinding;
-    Seeker seeker;
+    Unit unit;
 
     private void Start()
     {
         pathfinding = gameObject.GetComponent<Pathfinding>();
-        seeker = GetComponentInChildren<Seeker>();
+        unit = GetComponentInChildren<Unit>();
 
         rotationStep = zoomSpeed * (topRotation-bottomRotation) / (maxZoomedOut - maxZoomedIn);
         Camera.main.transform.position = new Vector3(Camera.main.transform.position.x,maxZoomedOut,Camera.main.transform.position.z);
@@ -31,24 +31,24 @@ public class Player : MonoBehaviour {
         //Mouse Click Pathfinding
         if (Input.GetMouseButtonUp(1))
         {
-            seeker.moveSeeker = true;
+            unit.moveUnit = true;
         }
         else if (Input.GetMouseButton(1))
         {
-            seeker.moveSeeker = false;
+            unit.moveUnit = false;
             HandleInput(inputMethods.doPath);
         }
 
         if (Input.GetMouseButtonUp(0))
         {
-            seeker.moveSeeker = true;
+            unit.moveUnit = true;
         }
         else if (Input.GetMouseButton(0))
         { 
             bool success = HandleInput(inputMethods.selectUnit);
             if (success)
             {
-                seeker.moveSeeker = false;
+                unit.moveUnit = false;
                 HandleInput(inputMethods.doPath);
             }          
         }
@@ -122,16 +122,16 @@ public class Player : MonoBehaviour {
         pos = transform.InverseTransformPoint(pos);
         HexCoordinates coords = (HexCoordinates.FromPosition(pos));
         //Debug.Log("Touched " + coords.ToString());
-        seeker.target = coords;
-        seeker.UpdatePath();
+        unit.target = coords;
+        unit.UpdatePath();
         return true;
     }
 
-    bool SelectUnit(Transform unit)
+    bool SelectUnit(Transform trans)
     {
-        if(unit.GetComponent<Seeker>() != null)
+        if(unit.GetComponent<Unit>() != null)
         {
-            seeker = unit.GetComponent<Seeker>();
+            unit = trans.GetComponent<Unit>();
             return true;
         }
         else

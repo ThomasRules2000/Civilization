@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Seeker : MonoBehaviour {
+public class Unit : MonoBehaviour {
 
     public float movementSpeed = 5;
-    public bool moveSeeker = false;
+    public bool moveUnit = false;
     public HexCoordinates target;
 
     HexGrid grid;
@@ -20,7 +20,7 @@ public class Seeker : MonoBehaviour {
 
 	public void Update()
     {
-        if (path != null && path.Count != 0 && moveSeeker) //Follow Path
+        if (path != null && path.Count != 0 && moveUnit) //Follow Path
         {
             if(transform.position.x == path[0].transform.position.x && transform.position.z == path[0].transform.position.z)
             {
