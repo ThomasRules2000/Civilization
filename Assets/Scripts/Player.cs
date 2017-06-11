@@ -13,12 +13,10 @@ public class Player : MonoBehaviour {
 
     float rotationStep;
 
-    Pathfinding pathfinding;
     Unit unit;
 
     private void Start()
     {
-        pathfinding = gameObject.GetComponent<Pathfinding>();
         unit = GetComponentInChildren<Unit>();
 
         rotationStep = zoomSpeed * (topRotation-bottomRotation) / (maxZoomedOut - maxZoomedIn);

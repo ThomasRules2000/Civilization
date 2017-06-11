@@ -6,6 +6,7 @@ using UnityEngine;
 public class HexMesh : MonoBehaviour
 {
     public float hillHeight = 2f;
+    public LineRenderer linePrefab;
 
     Mesh hexMesh;
     List<Vector3> vertices;
@@ -51,68 +52,63 @@ public class HexMesh : MonoBehaviour
 
     void Triangulate(HexCell cell, List<HexCoordinates> neighbours)
     {
-        Vector3 center = cell.transform.localPosition;
+        Vector3 centre = cell.transform.localPosition;
+
+        List<Vector3> linePoints = new List<Vector3>();
 
         if(cell.Type == HexType.types[HexType.typeKeys.hill])
         {
             //Add 6 triangles, centre is higher as hill
             for (int i = 0; i < 6; i++)
             {
+                Vector3 v2 = centre + HexMetrics.corners[i];
+                Vector3 v3 = centre + HexMetrics.corners[i + 1];
+
                 HexCoordinates neighbour = HexCoordinates.ToOffsetCoordinates(neighbours[i]);
                 if (neighbour.X >= 0 && neighbour.X < grid.width && neighbour.Z >= 0 && neighbour.Z < grid.height)
                 {
                     if (grid.cells[neighbour.X, neighbour.Z].Type == HexType.types[HexType.typeKeys.hill])
                     {
                         HexCoordinates prevNeighbour;
-                        if (i != 0)
-                        {
-                            prevNeighbour = HexCoordinates.ToOffsetCoordinates(neighbours[i - 1]);
-                        }
-                        else
+                        if (i == 0)
                         {
                             prevNeighbour = HexCoordinates.ToOffsetCoordinates(neighbours[5]);
                         }
+                        else
+                        {
+                            prevNeighbour = HexCoordinates.ToOffsetCoordinates(neighbours[i - 1]);
+                        }
 
                         HexCoordinates nextNeighbour;
-                        if (i != 5)
-                        {
-                            nextNeighbour = HexCoordinates.ToOffsetCoordinates(neighbours[i + 1]);
-                        }
-                        else
+                        if (i == 5)
                         {
                             nextNeighbour = HexCoordinates.ToOffsetCoordinates(neighbours[0]);
                         }
-
-                        bool prevHill = grid.cells[prevNeighbour.X, prevNeighbour.Z].Type == HexType.types[HexType.typeKeys.hill];
-                        bool nextHill = grid.cells[nextNeighbour.X, nextNeighbour.Z].Type == HexType.types[HexType.typeKeys.hill];
-                        if (prevHill && nextHill)
-                        {
-                            AddTriangle(center + Vector3.up * hillHeight, center + HexMetrics.corners[i] + Vector3.up * hillHeight, center + HexMetrics.corners[i + 1] + Vector3.up * hillHeight);
-                        }
-                        else if (prevHill)
-                        {
-                            AddTriangle(center + Vector3.up * hillHeight, center + HexMetrics.corners[i] + Vector3.up * hillHeight, center + HexMetrics.corners[i + 1]);
-                        }
-                        else if (nextHill)
-                        {
-                            AddTriangle(center + Vector3.up * hillHeight, center + HexMetrics.corners[i], center + HexMetrics.corners[i + 1] + Vector3.up * hillHeight);
-                        }
                         else
                         {
-                            AddTriangle(center + Vector3.up * hillHeight, center + HexMetrics.corners[i], center + HexMetrics.corners[i + 1]);
+                            nextNeighbour = HexCoordinates.ToOffsetCoordinates(neighbours[i + 1]);
+                        }
+
+                        if (prevNeighbour.X >= 0 && prevNeighbour.X < grid.width && prevNeighbour.Z >= 0 && prevNeighbour.Z < grid.height)
+                        {
+                            if (grid.cells[prevNeighbour.X, prevNeighbour.Z].Type == HexType.types[HexType.typeKeys.hill])
+                            {
+                                v2 += Vector3.up * hillHeight;
+                            }
+                        }
+
+                        if (nextNeighbour.X >= 0 && nextNeighbour.X < grid.width && nextNeighbour.Z >= 0 && nextNeighbour.Z < grid.height)
+                        {
+                            if (grid.cells[nextNeighbour.X, nextNeighbour.Z].Type == HexType.types[HexType.typeKeys.hill])
+                            {
+                                v3 += Vector3.up * hillHeight;
+                            }
                         }
                     }
-                    else
-                    {
-                        AddTriangle(center + Vector3.up * hillHeight, center + HexMetrics.corners[i], center + HexMetrics.corners[i + 1]);
-                    }
-                }               
-                else
-                {
-                    AddTriangle(center + Vector3.up * hillHeight, center + HexMetrics.corners[i], center + HexMetrics.corners[i + 1]);
                 }
-                
+                AddTriangle(centre + Vector3.up * hillHeight, v2, v3);
                 AddTriangleColour(cell.colour);
+                linePoints.Add(v2);
             }
         }
         else
@@ -120,11 +116,17 @@ public class HexMesh : MonoBehaviour
             //Add 6 triangles
             for (int i = 0; i < 6; i++)
             {
-                AddTriangle(center, center + HexMetrics.corners[i], center + HexMetrics.corners[i + 1]);
+                AddTriangle(centre, centre + HexMetrics.corners[i], centre + HexMetrics.corners[i + 1]);
                 AddTriangleColour(cell.colour);
+                linePoints.Add(centre + HexMetrics.corners[i]);
             }
         }
-          
+
+        LineRenderer outline = Instantiate<LineRenderer>(linePrefab);
+        outline.transform.name = cell.coordinates.ToString() + "Outline";
+        outline.transform.parent = transform;
+        outline.positionCount = 6;
+        outline.SetPositions(linePoints.ToArray());
     }
 
     //Create corners

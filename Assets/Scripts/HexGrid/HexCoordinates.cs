@@ -81,8 +81,6 @@ public struct HexCoordinates
 
     public static List<HexCoordinates> GetNeighbours(HexCoordinates coords)
     {
-        HexCoordinates offsetCoords = HexCoordinates.ToOffsetCoordinates(coords);
-
         List<HexCoordinates> neighbours = new List<HexCoordinates>();
 
         neighbours.Add(new HexCoordinates(coords.X, coords.Z + 1));
