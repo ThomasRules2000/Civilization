@@ -18,7 +18,14 @@ public class HexGrid : MonoBehaviour
     public int islandSizeMax = 5;
     public int numIslands = 1;
     public float fractionHills = 0.2f;
+    public float fractionForest = 0.2f;
+    public float fractionDesert = 0.2f;
+
     public float hillHeight = 2f;
+    public int forestSizeMin = 1;
+    public int forestSizeMax = 10;
+    public int desertSizeMin = 1;
+    public int desertSizeMax = 10;
 
     public HexCell cellPrefab;
 
@@ -29,6 +36,11 @@ public class HexGrid : MonoBehaviour
     HexMesh hexMesh;
     void Awake()
     {
+        if (fractionHills + fractionForest + fractionDesert > 1)
+        {
+            throw new System.Exception("Total Fractions of Tiles must be less than 1!");
+        }
+
         gridCanvas = GetComponentInChildren<Canvas>();
         hexMesh = GetComponentInChildren<HexMesh>();
         
@@ -154,9 +166,10 @@ public class HexGrid : MonoBehaviour
             allIslandTiles.UnionWith(islandTiles);
         }
 
-        HashSet<HexCoordinates> hillTiles = new HashSet<HexCoordinates>();
+        int numAllIslandTiles = allIslandTiles.Count();
 
-        for (int i = 0; i < allIslandTiles.Count * fractionHills; i++) // Hill Generation
+        HashSet<HexCoordinates> hillTiles = new HashSet<HexCoordinates>();
+        for (int i = 0; i < numAllIslandTiles * fractionHills; i++) // Hill Generation
         {
             int hillIndex;
             HexCoordinates coords;
@@ -170,8 +183,66 @@ public class HexGrid : MonoBehaviour
             map[coords.X, coords.Z] = HexType.types[HexType.typeKeys.hill];
             hillTiles.Add(coords);
         }
+        allIslandTiles.ExceptWith(hillTiles);
+
+        HashSet<HexCoordinates> forestTiles = GenerateZones(out map, HexType.typeKeys.forest, fractionForest, forestSizeMin, forestSizeMax, numAllIslandTiles, allIslandTiles, map);
+        allIslandTiles.ExceptWith(forestTiles);
+
+        HashSet<HexCoordinates> desertTiles = GenerateZones(out map, HexType.typeKeys.desert, fractionDesert, desertSizeMin, desertSizeMax, numAllIslandTiles, allIslandTiles, map);
+        allIslandTiles.ExceptWith(desertTiles);
 
         return map;
+    }
+
+    public HashSet<HexCoordinates> GenerateZones(out HexType[,] mapOut, HexType.typeKeys type, float fractionType, int typeSizeMin, int typeSizeMax, int numAllIslandTiles, HashSet<HexCoordinates> allIslandTiles, HexType[,] map)
+    {
+        mapOut = map;
+
+        HashSet<HexCoordinates> typeTiles = new HashSet<HexCoordinates>();
+        for (int i = 0; i < numAllIslandTiles * fractionType / (typeSizeMax - typeSizeMin + 1); i++) //Forest Generation
+        {
+            int typeSize = Random.Range(typeSizeMin, typeSizeMax);
+
+            int typeCentreIndex;
+            HexCoordinates centreCoords;
+            do
+            {
+                typeCentreIndex = Random.Range(0, allIslandTiles.Count);
+                centreCoords = allIslandTiles.ElementAt(typeCentreIndex);
+            } while (typeTiles.Contains(centreCoords));
+            typeTiles.Add(centreCoords);
+
+            List<HexCoordinates> possibleTiles = new List<HexCoordinates>();
+            possibleTiles.AddRange(HexCoordinates.GetNeighbours(centreCoords));
+
+            for (int j = 1; j < typeSize; j++)
+            {
+                int tileIndex;
+                HexCoordinates coords;
+                do
+                {
+                    tileIndex = Random.Range(0, possibleTiles.Count);
+                    coords = possibleTiles[tileIndex];
+                } while (coords.X >= width || coords.X < 0 || coords.Z >= height || coords.Z < 0 || typeTiles.Contains(coords));
+                typeTiles.Add(coords);
+
+                mapOut[coords.X, coords.Z] = HexType.types[type];
+
+                List<HexCoordinates> neighbours = HexCoordinates.GetNeighbours(coords);
+
+                for (int hc = 0; hc < neighbours.Count; hc++)
+                {
+                    HexCoordinates neighbour = neighbours[hc];
+                    if (typeTiles.Contains(neighbour))
+                    {
+                        neighbours.Remove(neighbour);
+                    }
+                }
+                possibleTiles.AddRange(neighbours);
+            }
+        }
+
+        return typeTiles;
     }
 
     public List<HexCell> path;

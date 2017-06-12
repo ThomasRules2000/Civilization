@@ -29,8 +29,8 @@ public class HexType
     {
         { typeKeys.plains,  new HexType(Color.green,  1, false) },
         { typeKeys.ocean,   new HexType(Color.blue,   1, true)  },
-        { typeKeys.forest,  new HexType(new Color(0,0.3f,0),  4, false) },
-        { typeKeys.desert,  new HexType(Color.yellow, 1, false) },
+        { typeKeys.forest,  new HexType(new Color(0.133f,0.545f,0.133f),  4, false)  },
+        { typeKeys.desert,  new HexType(new Color(1f, 0.714f, 0.009f), 1, false) },
         { typeKeys.city,    new HexType(Color.grey,   1, false) },
         { typeKeys.hill,    new HexType(Color.green,  2, false) }
     };
