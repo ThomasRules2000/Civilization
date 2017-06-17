@@ -22,7 +22,8 @@ public class HexType
         forest,
         desert,
         city,
-        hill
+        hill,
+        coast
     }
 
     public static Dictionary<typeKeys, HexType> types = new Dictionary<typeKeys, HexType> //Todo - add more tile types
@@ -32,7 +33,8 @@ public class HexType
         { typeKeys.forest,  new HexType(new Color(0.133f,0.545f,0.133f),  4, false)  },
         { typeKeys.desert,  new HexType(new Color(1f, 0.714f, 0.009f), 1, false) },
         { typeKeys.city,    new HexType(Color.grey,   1, false) },
-        { typeKeys.hill,    new HexType(Color.green,  2, false) }
+        { typeKeys.hill,    new HexType(Color.green,  2, false) },
+        { typeKeys.coast,   new HexType(new Color(0.298f, 0.298f, 1), 1, true)  }
     };
 
     public override string ToString()
