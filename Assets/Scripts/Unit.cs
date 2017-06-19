@@ -69,5 +69,7 @@ public class Unit : MonoBehaviour {
             canMoveThisTurn = 1;
         }
         grid.path = path;
+        grid.pathRenderer.positionCount = path.Count;
+        grid.pathRenderer.SetPositions(Pathfinding.toVector3(path));
     }
 }

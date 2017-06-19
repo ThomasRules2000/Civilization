@@ -96,4 +96,14 @@ public class Pathfinding : MonoBehaviour {
     {
         return Mathf.Sqrt(((nodeA.X - nodeB.X) * (nodeA.X - nodeB.X)) + (nodeA.Y - nodeB.Y) * (nodeA.Y - nodeB.Y) + (nodeA.Z - nodeB.Z) * (nodeA.Z - nodeB.Z));
     }
+
+    public static Vector3[] toVector3(List<HexCell> path)
+    {
+        Vector3[] v3List = new Vector3[path.Count];
+        for(int i = 0; i < path.Count; i++)
+        {
+            v3List[i] = path[i].transform.position;
+        }
+        return v3List;
+    }
 }

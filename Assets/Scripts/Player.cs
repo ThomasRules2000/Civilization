@@ -32,7 +32,13 @@ public class Player : MonoBehaviour {
 
     void Update ()
     {
-        //Mouse Click Pathfinding
+        //Space Next Turn
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            NextTurn();
+        }
+        
+        //Right Mouse Click Pathfinding
         if (Input.GetMouseButtonUp(1))
         {
             unit.moveUnit = true;
@@ -43,12 +49,15 @@ public class Player : MonoBehaviour {
             HandleInput(inputMethods.doPath);
         }
 
+        //Left Mouse Click Unit Selection
         if (Input.GetMouseButton(0))
         { 
             bool success = HandleInput(inputMethods.selectUnit);
             if (success)
             {
                 grid.path = unit.Path;
+                grid.pathRenderer.positionCount = unit.Path.Count;
+                grid.pathRenderer.SetPositions(Pathfinding.toVector3(unit.Path));
             }
         }
 

@@ -8,6 +8,7 @@ public class HexGrid : MonoBehaviour
 {
     public Text labelPrefab;
     Canvas gridCanvas;
+    public LineRenderer pathRenderer;
 
     public bool showCoords = true;
 
@@ -41,6 +42,8 @@ public class HexGrid : MonoBehaviour
         {
             throw new System.Exception("Total Fractions of Tiles must be less than 1!");
         }
+
+        pathRenderer = GetComponent<LineRenderer>();
 
         gridCanvas = GetComponentInChildren<Canvas>();
         hexMesh = GetComponentInChildren<HexMesh>();
