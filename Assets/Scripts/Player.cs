@@ -19,7 +19,7 @@ public class Player : MonoBehaviour {
 
     HexGrid grid;
 
-    Unit unit;
+    public Unit unit;
     List<Unit> units = new List<Unit>();
 
     private void Start()

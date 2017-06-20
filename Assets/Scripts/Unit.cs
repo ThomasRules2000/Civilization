@@ -13,6 +13,8 @@ public class Unit : MonoBehaviour {
     HexGrid grid;
     List<HexCell> path;
 
+    Player player;
+
     public List<HexCell> Path
     {
         get
@@ -25,6 +27,7 @@ public class Unit : MonoBehaviour {
 	void Start ()
     {
         grid = gameObject.GetComponentInParent<HexGrid>();
+        player = gameObject.GetComponentInParent<Player>();
 	}
 	
 	// Update is called once per frame
@@ -41,7 +44,12 @@ public class Unit : MonoBehaviour {
                 {
                     canMoveThisTurn = path[0].Type.movementCost + 1;
                 }
+                HexCell currentCell = path[0];
                 path.RemoveAt(0);
+                if(player.unit == this)
+                {
+                    grid.UpdateLine(path, currentCell);
+                }
             }
             else
             {
