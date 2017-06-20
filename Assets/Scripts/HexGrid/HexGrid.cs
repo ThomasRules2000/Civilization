@@ -107,6 +107,12 @@ public class HexGrid : MonoBehaviour
 
     public void UpdateLine(List<HexCell> path, HexCell currentCell)
     {
+        if(path == null)
+        {
+            pathRenderer.positionCount = 0;
+            return;
+        }
+
         List<HexCell> tempPath = new List<HexCell>(); //Needed so that unit path is not modified, reducing tiles per turn
         tempPath.AddRange(path);
         if (currentCell != null)

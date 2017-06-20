@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
 
@@ -13,6 +14,9 @@ public class Player : MonoBehaviour {
 
     float rotationStep;
 
+    int turnNo = 1;
+    public Text turnCounterText;
+
     HexGrid grid;
 
     Unit unit;
@@ -24,6 +28,8 @@ public class Player : MonoBehaviour {
         units.AddRange(GetComponentsInChildren<Unit>());
 
         grid = GetComponent<HexGrid>();
+
+        turnCounterText.text = "Turn: " + turnNo;
 
         rotationStep = zoomSpeed * (topRotation-bottomRotation) / (maxZoomedOut - maxZoomedIn);
         Camera.main.transform.position = new Vector3(Camera.main.transform.position.x,maxZoomedOut,Camera.main.transform.position.z);
@@ -103,6 +109,8 @@ public class Player : MonoBehaviour {
 
     public void NextTurn()
     {
+        turnNo++;
+        turnCounterText.text = "Turn: " + turnNo;
         foreach(Unit u in units)
         {
             u.canMoveThisTurn = u.tilesPerTurn;
