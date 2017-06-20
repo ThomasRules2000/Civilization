@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class HexType
 {
@@ -39,6 +40,7 @@ public class HexType
 
     public override string ToString()
     {
-        return System.Enum.GetName(typeof(typeKeys), this);
+        typeKeys key = types.FirstOrDefault(x => x.Value == this).Key;
+        return System.Enum.GetName(typeof(typeKeys), key);
     }
 }

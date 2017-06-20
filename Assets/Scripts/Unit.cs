@@ -36,9 +36,10 @@ public class Unit : MonoBehaviour {
             if(transform.position.x == path[0].transform.position.x && transform.position.z == path[0].transform.position.z)
             {
                 canMoveThisTurn -= path[0].Type.movementCost;
+                //Debug.Log(path[0].Type.ToString() + " " + path[1].Type.ToString());
                 if(path.Count > 1 && canMoveThisTurn > 1 && path[0].Type.isWater != path[1].Type.isWater)
                 {
-                    canMoveThisTurn = 1;
+                    canMoveThisTurn = path[0].Type.movementCost + 1;
                 }
                 path.RemoveAt(0);
             }
@@ -69,7 +70,6 @@ public class Unit : MonoBehaviour {
             canMoveThisTurn = 1;
         }
         grid.path = path;
-        grid.pathRenderer.positionCount = path.Count;
-        grid.pathRenderer.SetPositions(Pathfinding.toVector3(path));
+        grid.UpdateLine(path, grid.cells[currentCoords.X, currentCoords.Z]);
     }
 }

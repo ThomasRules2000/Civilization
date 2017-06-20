@@ -56,8 +56,8 @@ public class Player : MonoBehaviour {
             if (success)
             {
                 grid.path = unit.Path;
-                grid.pathRenderer.positionCount = unit.Path.Count;
-                grid.pathRenderer.SetPositions(Pathfinding.toVector3(unit.Path));
+                HexCoordinates currentPos = HexCoordinates.ToOffsetCoordinates(HexCoordinates.FromPosition(unit.transform.position));
+                grid.UpdateLine(unit.Path, grid.cells[currentPos.X, currentPos.Z]);
             }
         }
 
@@ -107,6 +107,8 @@ public class Player : MonoBehaviour {
         {
             u.canMoveThisTurn = u.tilesPerTurn;
         }
+        HexCoordinates currentPos = HexCoordinates.ToOffsetCoordinates(HexCoordinates.FromPosition(unit.transform.position));
+        grid.UpdateLine(unit.Path, grid.cells[currentPos.X, currentPos.Z]);
     }
 
     bool HandleInput(inputMethods method)

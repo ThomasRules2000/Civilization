@@ -105,6 +105,19 @@ public class HexGrid : MonoBehaviour
         }     
     }
 
+    public void UpdateLine(List<HexCell> path, HexCell currentCell)
+    {
+        List<HexCell> tempPath = new List<HexCell>(); //Needed so that unit path is not modified, reducing tiles per turn
+        tempPath.AddRange(path);
+        if (currentCell != null)
+        {
+            tempPath.Insert(0, currentCell);
+        }
+        pathRenderer.material.mainTextureScale = new Vector2(tempPath.Count / 1.5f, 1);
+        pathRenderer.positionCount = tempPath.Count;
+        pathRenderer.SetPositions(Pathfinding.toVector3(tempPath));
+    }
+
     public List<HexCell> path;
     void OnDrawGizmos()
     {
