@@ -65,32 +65,25 @@ public class HexMesh : MonoBehaviour
                 Vector3 secondGroundCorner = HexMetrics.GetSecondCorner(d);
                 Vector3 firstHillCorner = HexMetrics.GetFirstHillCorner(d);
                 Vector3 secondHillCorner = HexMetrics.GetSecondHillCorner(d);
-
-                HexCoordinates neighbourCoords = HexCoordinates.ToOffsetCoordinates(neighbours[(int)d]);
-                HexCell thisNeighbour = null;
-                if (neighbourCoords.X >= 0 && neighbourCoords.X < grid.width && neighbourCoords.Z >= 0 && neighbourCoords.Z < grid.height)
-                {
-                    thisNeighbour = grid.cells[neighbourCoords.X, neighbourCoords.Z];
-                }
                  
                 AddTriangle(hillCentre, hillCentre + firstHillCorner, hillCentre + secondHillCorner);
                 AddTriangleColour(cell.colour);
                 linePoints.Add(hillCentre + HexMetrics.GetFirstHillCorner(d));
 
-                if(thisNeighbour == null || thisNeighbour.Type != HexType.types[HexType.typeKeys.hill])
+                AddTriangle(hillCentre + firstHillCorner, centre + firstGroundCorner, centre + secondGroundCorner);
+                AddTriangleColour(cell.colour);
+                AddTriangle(centre + secondGroundCorner, hillCentre + secondHillCorner, hillCentre + firstHillCorner);
+                AddTriangleColour(cell.colour);
+
+                LineRenderer connectorLine = Instantiate<LineRenderer>(linePrefab);
+                connectorLine.transform.name = cell.coordinates.ToString() + " " + System.Enum.GetName(typeof(HexDirection), d) + " Line";
+                connectorLine.transform.parent = transform;
+                connectorLine.positionCount = 2;
+                connectorLine.SetPositions(new Vector3[]
                 {
-                    AddTriangle(hillCentre + firstHillCorner, centre + firstGroundCorner, centre + secondGroundCorner);
-                    AddTriangleColour(cell.colour);
-                    AddTriangle(centre + secondGroundCorner, hillCentre + secondHillCorner, hillCentre + firstHillCorner);
-                    AddTriangleColour(cell.colour);
-                }
-                else
-                {
-                    AddTriangle(hillCentre + firstHillCorner, hillCentre + firstGroundCorner, hillCentre + secondGroundCorner);
-                    AddTriangleColour(cell.colour);
-                    AddTriangle(hillCentre + secondGroundCorner, hillCentre + secondHillCorner, hillCentre + firstHillCorner);
-                    AddTriangleColour(cell.colour);
-                }
+                    hillCentre + HexMetrics.GetFirstHillCorner(d),
+                    centre + HexMetrics.GetFirstCorner(d)
+                });
             }
         }
         else
