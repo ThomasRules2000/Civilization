@@ -123,21 +123,4 @@ public class HexGrid : MonoBehaviour
         pathRenderer.positionCount = tempPath.Count;
         pathRenderer.SetPositions(Pathfinding.toVector3(tempPath));
     }
-
-    public List<HexCell> path;
-    void OnDrawGizmos()
-    {
-        if(cells != null)
-        {
-            foreach(HexCell c in cells)
-            {
-                Gizmos.color = Color.white;
-                if (path != null && path.Contains(c))
-                {
-                    Gizmos.color = Color.red;
-                }
-                Gizmos.DrawCube(new Vector3((c.coordinates.X + c.coordinates.Z / 2f) * HexMetrics.innerRad * 2, 1, c.coordinates.Z * HexMetrics.outerRad * 1.5f), Vector3.one * 5);
-            }
-        }
-    }
 }

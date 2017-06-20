@@ -77,7 +77,6 @@ public class Unit : MonoBehaviour {
         {
             canMoveThisTurn = 1;
         }
-        grid.path = path;
         grid.UpdateLine(path, grid.cells[currentCoords.X, currentCoords.Z]);
     }
 }

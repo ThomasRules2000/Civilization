@@ -61,7 +61,6 @@ public class Player : MonoBehaviour {
             bool success = HandleInput(inputMethods.selectUnit);
             if (success)
             {
-                grid.path = unit.Path;
                 HexCoordinates currentPos = HexCoordinates.ToOffsetCoordinates(HexCoordinates.FromPosition(unit.transform.position));
                 grid.UpdateLine(unit.Path, grid.cells[currentPos.X, currentPos.Z]);
             }

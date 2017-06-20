@@ -57,57 +57,40 @@ public class HexMesh : MonoBehaviour
 
         if(cell.Type == HexType.types[HexType.typeKeys.hill])
         {
-            //Add 6 triangles, centre is higher as hill
-            for (HexDirection d = HexDirection.NE; d <= HexDirection.NW; d++)
+            Vector3 hillCentre = new Vector3(centre.x, centre.y + HexMetrics.hillHeight, centre.z);
+            //Add 6 (smaller) triangles
+            for(HexDirection d = HexDirection.NE; d <= HexDirection.NW; d++)
             {
-                Vector3 v2 = centre + HexMetrics.GetFirstCorner(d);
-                Vector3 v3 = centre + HexMetrics.GetSecondCorner(d);
+                Vector3 firstGroundCorner = HexMetrics.GetFirstCorner(d);
+                Vector3 secondGroundCorner = HexMetrics.GetSecondCorner(d);
+                Vector3 firstHillCorner = HexMetrics.GetFirstHillCorner(d);
+                Vector3 secondHillCorner = HexMetrics.GetSecondHillCorner(d);
 
-                HexCoordinates neighbour = HexCoordinates.ToOffsetCoordinates(neighbours[(int)d]);
-                if (neighbour.X >= 0 && neighbour.X < grid.width && neighbour.Z >= 0 && neighbour.Z < grid.height)
+                HexCoordinates neighbourCoords = HexCoordinates.ToOffsetCoordinates(neighbours[(int)d]);
+                HexCell thisNeighbour = null;
+                if (neighbourCoords.X >= 0 && neighbourCoords.X < grid.width && neighbourCoords.Z >= 0 && neighbourCoords.Z < grid.height)
                 {
-                    if (grid.cells[neighbour.X, neighbour.Z].Type == HexType.types[HexType.typeKeys.hill])
-                    {
-                        HexCoordinates prevNeighbour;
-                        if (d == HexDirection.NE)
-                        {
-                            prevNeighbour = HexCoordinates.ToOffsetCoordinates(neighbours[5]);
-                        }
-                        else
-                        {
-                            prevNeighbour = HexCoordinates.ToOffsetCoordinates(neighbours[(int)d - 1]);
-                        }
-
-                        HexCoordinates nextNeighbour;
-                        if (d == HexDirection.NW)
-                        {
-                            nextNeighbour = HexCoordinates.ToOffsetCoordinates(neighbours[0]);
-                        }
-                        else
-                        {
-                            nextNeighbour = HexCoordinates.ToOffsetCoordinates(neighbours[(int)d + 1]);
-                        }
-
-                        if (prevNeighbour.X >= 0 && prevNeighbour.X < grid.width && prevNeighbour.Z >= 0 && prevNeighbour.Z < grid.height)
-                        {
-                            if (grid.cells[prevNeighbour.X, prevNeighbour.Z].Type == HexType.types[HexType.typeKeys.hill])
-                            {
-                                v2 += Vector3.up * grid.hillHeight;
-                            }
-                        }
-
-                        if (nextNeighbour.X >= 0 && nextNeighbour.X < grid.width && nextNeighbour.Z >= 0 && nextNeighbour.Z < grid.height)
-                        {
-                            if (grid.cells[nextNeighbour.X, nextNeighbour.Z].Type == HexType.types[HexType.typeKeys.hill])
-                            {
-                                v3 += Vector3.up * grid.hillHeight;
-                            }
-                        }
-                    }
+                    thisNeighbour = grid.cells[neighbourCoords.X, neighbourCoords.Z];
                 }
-                AddTriangle(centre + Vector3.up * grid.hillHeight, v2, v3);
+                 
+                AddTriangle(hillCentre, hillCentre + firstHillCorner, hillCentre + secondHillCorner);
                 AddTriangleColour(cell.colour);
-                linePoints.Add(v2);
+                linePoints.Add(hillCentre + HexMetrics.GetFirstHillCorner(d));
+
+                if(thisNeighbour == null || thisNeighbour.Type != HexType.types[HexType.typeKeys.hill])
+                {
+                    AddTriangle(hillCentre + firstHillCorner, centre + firstGroundCorner, centre + secondGroundCorner);
+                    AddTriangleColour(cell.colour);
+                    AddTriangle(centre + secondGroundCorner, hillCentre + secondHillCorner, hillCentre + firstHillCorner);
+                    AddTriangleColour(cell.colour);
+                }
+                else
+                {
+                    AddTriangle(hillCentre + firstHillCorner, hillCentre + firstGroundCorner, hillCentre + secondGroundCorner);
+                    AddTriangleColour(cell.colour);
+                    AddTriangle(hillCentre + secondGroundCorner, hillCentre + secondHillCorner, hillCentre + firstHillCorner);
+                    AddTriangleColour(cell.colour);
+                }
             }
         }
         else
