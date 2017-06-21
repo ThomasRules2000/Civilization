@@ -12,6 +12,8 @@ public class Player : MonoBehaviour {
     public float topRotation = 90;
     public float bottomRotation = 60;
 
+    public float camTranslationSpeed = 20;
+
     float rotationStep;
 
     int turnNo = 1;
@@ -67,8 +69,8 @@ public class Player : MonoBehaviour {
         }
 
         //Mouse Wheel Zoom
-        float d = Input.GetAxis("Mouse ScrollWheel");
-        if (d > 0f)
+        float scrollAxis = Input.GetAxis("Mouse ScrollWheel");
+        if (scrollAxis > 0f)
         {
             //Zoom In
             if (Camera.main.transform.position.y - zoomSpeed > maxZoomedIn)
@@ -86,7 +88,7 @@ public class Player : MonoBehaviour {
                 Camera.main.transform.rotation = Quaternion.Euler(Camera.main.transform.eulerAngles.x - rotationStep, Camera.main.transform.eulerAngles.y, Camera.main.transform.eulerAngles.z);
             }
         }
-        else if (d < 0f)
+        else if (scrollAxis < 0f)
         {
             //Zoom Out
             Vector2 camMovement = Vector2.zero;
@@ -100,10 +102,14 @@ public class Player : MonoBehaviour {
 
             if (Camera.main.transform.position.y + zoomSpeed < maxZoomedOut)
             {
-                Camera.main.transform.Translate(new Vector3(camMovement.x, +zoomSpeed, camMovement.y), Space.World);
+                Camera.main.transform.Translate(camMovement.x, +zoomSpeed, camMovement.y, Space.World);
                 Camera.main.transform.rotation = Quaternion.Euler(Camera.main.transform.eulerAngles.x + rotationStep, Camera.main.transform.eulerAngles.y, Camera.main.transform.eulerAngles.z);
             }
         }
+
+        float horizAxis = Input.GetAxis("Horizontal") * Time.deltaTime * camTranslationSpeed * (Camera.main.transform.position.y - maxZoomedIn / 2);
+        float vertAxis = Input.GetAxis("Vertical") * Time.deltaTime * camTranslationSpeed * (Camera.main.transform.position.y - maxZoomedIn / 2);
+        Camera.main.transform.Translate(horizAxis, 0f, vertAxis, Space.World);
 	}
 
     public void NextTurn()
