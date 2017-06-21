@@ -58,31 +58,46 @@ public class HexMesh : MonoBehaviour
         if(cell.Type == HexType.types[HexType.typeKeys.hill])
         {
             Vector3 hillCentre = new Vector3(centre.x, centre.y + HexMetrics.hillHeight, centre.z);
+            Color shadedCol = new Color(cell.colour.r * 0.8f, cell.colour.g * 0.8f, cell.colour.b * 0.8f);
+
             //Add 6 (smaller) triangles
-            for(HexDirection d = HexDirection.NE; d <= HexDirection.NW; d++)
+            for (HexDirection d = HexDirection.NE; d <= HexDirection.NW; d++)
             {
                 Vector3 firstGroundCorner = HexMetrics.GetFirstCorner(d);
                 Vector3 secondGroundCorner = HexMetrics.GetSecondCorner(d);
                 Vector3 firstHillCorner = HexMetrics.GetFirstHillCorner(d);
                 Vector3 secondHillCorner = HexMetrics.GetSecondHillCorner(d);
                  
+                //Smaller Central Triangles
                 AddTriangle(hillCentre, hillCentre + firstHillCorner, hillCentre + secondHillCorner);
                 AddTriangleColour(cell.colour);
-                linePoints.Add(hillCentre + HexMetrics.GetFirstHillCorner(d));
+                linePoints.Add(hillCentre + HexMetrics.GetFirstHillCorner(d) + Vector3.up * 0.1f);
 
+                //Side triangles
                 AddTriangle(hillCentre + firstHillCorner, centre + firstGroundCorner, centre + secondGroundCorner);
-                AddTriangleColour(cell.colour);
                 AddTriangle(centre + secondGroundCorner, hillCentre + secondHillCorner, hillCentre + firstHillCorner);
-                AddTriangleColour(cell.colour);
 
+                if(d <= HexDirection.E)
+                {
+                    AddTriangleColour(shadedCol);
+                    AddTriangleColour(shadedCol);
+                }
+                else
+                {
+                    AddTriangleColour(cell.colour);
+                    AddTriangleColour(cell.colour);
+                }
+                
+
+                //Lines up the hill
                 LineRenderer connectorLine = Instantiate<LineRenderer>(linePrefab);
                 connectorLine.transform.name = cell.coordinates.ToString() + " " + System.Enum.GetName(typeof(HexDirection), d) + " Line";
                 connectorLine.transform.parent = transform;
                 connectorLine.positionCount = 2;
                 connectorLine.SetPositions(new Vector3[]
                 {
-                    hillCentre + HexMetrics.GetFirstHillCorner(d),
-                    centre + HexMetrics.GetFirstCorner(d)
+                    hillCentre + HexMetrics.GetFirstHillCorner(d) + Vector3.up * 0.1f,
+                    centre + HexMetrics.GetFirstCorner(d) + Vector3.up * 0.1f
                 });
             }
         }
@@ -93,7 +108,7 @@ public class HexMesh : MonoBehaviour
             {
                 AddTriangle(centre, centre + HexMetrics.GetFirstCorner(d), centre + HexMetrics.GetSecondCorner(d));
                 AddTriangleColour(cell.colour);
-                linePoints.Add(centre + HexMetrics.GetFirstCorner(d));
+                linePoints.Add(centre + HexMetrics.GetFirstCorner(d) + Vector3.up * 0.1f);
             }
         }
 
