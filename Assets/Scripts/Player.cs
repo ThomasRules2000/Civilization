@@ -13,6 +13,7 @@ public class Player : MonoBehaviour {
     public float bottomRotation = 60;
 
     public float camTranslationSpeed = 20;
+    public float mouseScrollArea = 20;
 
     float rotationStep;
 
@@ -109,6 +110,27 @@ public class Player : MonoBehaviour {
 
         float horizAxis = Input.GetAxis("Horizontal") * Time.deltaTime * camTranslationSpeed * (Camera.main.transform.position.y - maxZoomedIn / 2);
         float vertAxis = Input.GetAxis("Vertical") * Time.deltaTime * camTranslationSpeed * (Camera.main.transform.position.y - maxZoomedIn / 2);
+
+        float mPosX = Input.mousePosition.x;
+        float mPosY = Input.mousePosition.y;
+        if(mPosX >= 0 && mPosX < mouseScrollArea)
+        {
+            horizAxis = -Time.deltaTime * camTranslationSpeed * (Camera.main.transform.position.y - maxZoomedIn / 2);
+        }
+        else if(mPosX < Screen.width && mPosX >= Screen.width-mouseScrollArea)
+        {
+            horizAxis = Time.deltaTime * camTranslationSpeed * (Camera.main.transform.position.y - maxZoomedIn / 2);
+        }
+
+        if (mPosY >= 0 && mPosY < mouseScrollArea)
+        {
+            vertAxis = -Time.deltaTime * camTranslationSpeed * (Camera.main.transform.position.y - maxZoomedIn / 2);
+        }
+        else if (mPosY < Screen.height && mPosY >= Screen.height - mouseScrollArea)
+        {
+            vertAxis = Time.deltaTime * camTranslationSpeed * (Camera.main.transform.position.y - maxZoomedIn / 2);
+        }
+
         Camera.main.transform.Translate(horizAxis, 0f, vertAxis, Space.World);
 	}
 
