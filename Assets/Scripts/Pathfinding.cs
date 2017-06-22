@@ -53,7 +53,7 @@ public class Pathfinding : MonoBehaviour {
                 float newMovementCost = currentNode.gCost + neighbour.Type.movementCost;
                 if(currentNode.Type.isWater != neighbour.Type.isWater)
                 {
-                    newMovementCost += newMovementCost % tilesPerTurn;
+                    newMovementCost += tilesPerTurn - (newMovementCost % tilesPerTurn); //End turn when crossing to land from water or vice versa
                 }
 
                 if (newMovementCost < neighbour.gCost || !openSet.Contains(neighbour))

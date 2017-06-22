@@ -42,7 +42,7 @@ public class Unit : MonoBehaviour {
                 //Debug.Log(path[0].Type.ToString() + " " + path[1].Type.ToString());
                 if(path.Count > 1 && canMoveThisTurn > 1 && path[0].Type.isWater != path[1].Type.isWater)
                 {
-                    canMoveThisTurn = path[0].Type.movementCost + 1;
+                    canMoveThisTurn = 1;
                 }
                 HexCell currentCell = path[0];
                 path.RemoveAt(0);
@@ -60,6 +60,7 @@ public class Unit : MonoBehaviour {
         }
         else //Move to centre of cell
         {
+            moveUnit = false; //For check script
             float step = movementSpeed * Time.deltaTime * 0.5f;
             HexCoordinates currentCoords = HexCoordinates.ToOffsetCoordinates(HexCoordinates.FromPosition(transform.position));
             Vector3 centre = grid.cells[currentCoords.X, currentCoords.Z].transform.position;

@@ -136,10 +136,18 @@ public class Player : MonoBehaviour {
 
     public void NextTurn()
     {
+        foreach(Unit u in units) //Check units aren't moving before next turn
+        {
+            if (u.moveUnit)
+            {
+                return;
+            }
+        }
         turnNo++;
         turnCounterText.text = "Turn: " + turnNo;
         foreach(Unit u in units)
         {
+            u.moveUnit = true;
             u.canMoveThisTurn = u.tilesPerTurn;
         }
         HexCoordinates currentPos = HexCoordinates.ToOffsetCoordinates(HexCoordinates.FromPosition(unit.transform.position));
