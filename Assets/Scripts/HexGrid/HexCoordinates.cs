@@ -18,7 +18,7 @@ public struct HexCoordinates
     {
         get
         {
-            return -X - Z;
+            return -x - z;
         }
     }
 
