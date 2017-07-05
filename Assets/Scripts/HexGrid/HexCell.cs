@@ -12,6 +12,8 @@ public class HexCell : MonoBehaviour, IHeapItem<HexCell>
     public HexCell parent;
     int heapIndex;
 
+    public Unit unitInCell;
+
     public float fCost
     {
         get
