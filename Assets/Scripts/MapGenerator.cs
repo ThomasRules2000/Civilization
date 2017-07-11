@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class MapGenerator {
 
-    public static HexType[,] GenerateMap(int width, int height, int islandSizeMin, int islandSizeMax, int numIslands, float fractionHills, float fractionForest, int forestSizeMin, int forestSizeMax, float fractionDesert, int desertSizeMin, int desertSizeMax)
+    public static HexType[,] GenerateMap(int width, int height, int islandSizeMin, int islandSizeMax, int numIslands, float fractionHills, float fractionForest, int forestSizeMin, int forestSizeMax, float fractionDesert, int desertSizeMin, int desertSizeMax, int numCivs, out HexCoordinates[] civStartPoints)
     {
         HexType[,] map = new HexType[width, height];
 
@@ -104,6 +104,8 @@ public static class MapGenerator {
         HashSet<HexCoordinates> forestTiles = GenerateZones(out map, width, height, HexType.typeKeys.forest, fractionForest, forestSizeMin, forestSizeMax, numAllIslandTiles, allIslandTiles, map);
         allIslandTiles.ExceptWith(forestTiles);
 
+        civStartPoints = getStartPoints(allIslandTiles, numCivs, width, height);
+
         return map;
     }
 
@@ -187,5 +189,15 @@ public static class MapGenerator {
 
         }
         return typeTiles;
+    }
+
+    static HexCoordinates[] getStartPoints(HashSet<HexCoordinates> islandTiles, int numCivs, int width, int height)
+    {
+        HexCoordinates[] startPoints = new HexCoordinates[numCivs];
+        for(int i = 0; i < numCivs; i++)
+        {
+            startPoints[i] = islandTiles.ElementAt<HexCoordinates>(Random.Range(0, islandTiles.Count));
+        }
+        return startPoints;
     }
 }

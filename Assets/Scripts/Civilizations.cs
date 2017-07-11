@@ -1,33 +1,37 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public static class Civilizations
 {
+    public static int defaultCivsLength = Enum.GetNames(typeof(defaultStartingCivs)).Length;
+    public static int branchingCivsLength = Enum.GetNames(typeof(branchingCivs)).Length;
+
     public static Dictionary<int,Civilization> civs = new Dictionary<int, Civilization>
     {
         //Starting Civs
-        { (int)defaultCivs.Aztecs,  new Civilization(new Color(0.921f,0.69f,0.208f), new Color(0.867f,0.118f,0.184f), "Aztecs", "Aztecs", "Aztec") },
-        { (int)defaultCivs.Celts,   new Civilization(new Color(0,0.5f,0), Color.white, "Celts", "Celts", "Celtic") },
-        { (int)defaultCivs.China,   new Civilization(Color.green,Color.white, "China","China", "Chinese") },
-        { (int)defaultCivs.Egypt,   new Civilization(Color.yellow, new Color(1,0,1), "Egypt", "Egypt", "Egyptian") },
-        { (int)defaultCivs.England, new Civilization(Color.red, Color.white, "England", "England", "English") },
-        { (int)defaultCivs.France,  new Civilization(new Color(0.5f,0.5f,1), Color.white, "France", "France", "French") },
-        { (int)defaultCivs.Germany, new Civilization(Color.white,Color.black,"Germany", "Germany", "German") },
-        { (int)defaultCivs.Greece,  new Civilization(Color.white,new Color(0.5f, 0.5f, 1), "Greece","Greece", "Greek") },
-        { (int)defaultCivs.India,   new Civilization(Color.green,Color.yellow,,"India", "India", "Indian") },
-        { (int)defaultCivs.Korea,   new Civilization(Color.blue,Color.red, "Korea", "Korea", "Korean") },
-        { (int)defaultCivs.Netherlands, new Civilization(new Color(1,0.5f,0), Color.white, "Netherlands", "The Netherlands", "Dutch") },
-        { (int)defaultCivs.Rome,    new Civilization(new Color(1,0,1), Color.yellow, "Rome", "The Roman Empire", "Roman" ) },
-        { (int)defaultCivs.Russia,  new Civilization(Color.yellow,Color.black,"Russia", "Russia", "Russian") },
-        { (int)defaultCivs.Spain,   new Civilization(new Color(0.565f,0.302f,0.239f), new Color(0.847f,0.306f,0.125f), "Spain", "Spain", "Spanish") },
-        { (int)defaultCivs.USA,     new Civilization(Color.blue, Color.white, "USA", "United States of America", "American") },
+        { (int)defaultStartingCivs.Aztecs,  new Civilization(new Color(0.921f,0.69f,0.208f), new Color(0.867f,0.118f,0.184f), "Aztecs", "Aztecs", "Aztec") },
+        { (int)defaultStartingCivs.Celts,   new Civilization(new Color(0,0.5f,0), Color.white, "Celts", "Celts", "Celtic") },
+        { (int)defaultStartingCivs.China,   new Civilization(Color.green,Color.white, "China","China", "Chinese") },
+        { (int)defaultStartingCivs.Egypt,   new Civilization(Color.yellow, new Color(1,0,1), "Egypt", "Egypt", "Egyptian") },
+        { (int)defaultStartingCivs.England, new Civilization(Color.red, Color.white, "England", "England", "English") },
+        { (int)defaultStartingCivs.France,  new Civilization(new Color(0.5f,0.5f,1), Color.white, "France", "France", "French") },
+        { (int)defaultStartingCivs.Germany, new Civilization(Color.white,Color.black,"Germany", "Germany", "German") },
+        { (int)defaultStartingCivs.Greece,  new Civilization(Color.white,new Color(0.5f, 0.5f, 1), "Greece","Greece", "Greek") },
+        { (int)defaultStartingCivs.India,   new Civilization(Color.green,Color.yellow, "India", "India", "Indian") },
+        { (int)defaultStartingCivs.Korea,   new Civilization(Color.blue,Color.red, "Korea", "Korea", "Korean") },
+        { (int)defaultStartingCivs.Netherlands, new Civilization(new Color(1,0.5f,0), Color.white, "Netherlands", "The Netherlands", "Dutch") },
+        { (int)defaultStartingCivs.Rome,    new Civilization(new Color(1,0,1), Color.yellow, "Rome", "The Roman Empire", "Roman" ) },
+        { (int)defaultStartingCivs.Russia,  new Civilization(Color.yellow,Color.black,"Russia", "Russia", "Russian") },
+        { (int)defaultStartingCivs.Spain,   new Civilization(new Color(0.565f,0.302f,0.239f), new Color(0.847f,0.306f,0.125f), "Spain", "Spain", "Spanish") },
+        { (int)defaultStartingCivs.USA,     new Civilization(Color.blue, Color.white, "USA", "United States of America", "American") },
         
         //Branching Civs
-        { (int)defaultCivs.CSA,     new Civilization(Color.red, Color.blue, "CSA", "Confederate States of America", "Confederate") },
-        { (int)defaultCivs.DPRK,    new Civilization(Color.red,Color.blue, "DPRK", "Democratic People's Republic of Korea", "North Korean") },
-        { (int)defaultCivs.PRC,     new Civilization(Color.red,Color.yellow, "PRC", "People's Republic of China", "PRC") },
-        { (int)defaultCivs.USSR,    new Civilization(Color.red,Color.yellow,"USSR", "Union of Soviet Socialist Republics", "Soviet") }
+        { (int)branchingCivs.CSA + defaultCivsLength + 1,     new Civilization(Color.red, Color.blue, "CSA", "Confederate States of America", "Confederate") },
+        { (int)branchingCivs.DPRK + defaultCivsLength + 1,    new Civilization(Color.red,Color.blue, "DPRK", "Democratic People's Republic of Korea", "North Korean") },
+        { (int)branchingCivs.PRC + defaultCivsLength + 1,     new Civilization(Color.red,Color.yellow, "PRC", "People's Republic of China", "PRC") },
+        { (int)branchingCivs.USSR + defaultCivsLength + 1,    new Civilization(Color.red,Color.yellow,"USSR", "Union of Soviet Socialist Republics", "Soviet") }
 
         //City States  
         
@@ -53,9 +57,25 @@ public class Civilization
         civLongName = _longName;
         civNationality = _nationality;
     }
+
+    public Color PrimaryColour
+    {
+        get
+        {
+            return primaryCol;
+        }
+    }
+
+    public Color SecondaryColour
+    {
+        get
+        {
+            return secondaryCol;
+        }
+    }
 }
 
-public enum defaultCivs
+public enum defaultStartingCivs
 {
     //Starting Civs
     Aztecs,
@@ -73,10 +93,17 @@ public enum defaultCivs
     Russia,
     Spain,
     USA,
+}
 
-    //Branching Civs
+public enum branchingCivs
+{
     CSA,
     DPRK,
     PRC,
     USSR
+}
+
+public enum cityStates
+{
+
 }

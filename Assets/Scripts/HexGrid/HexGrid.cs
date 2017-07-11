@@ -29,6 +29,9 @@ public class HexGrid : MonoBehaviour
     public int desertSizeMax = 10;
     public int maxDesertDistFromEquator = 5;
 
+    public int numCivs = 2;
+    public Unit defaultUnit;
+
     public HexCell cellPrefab;
 
     public HexCell[,] cells;
@@ -45,18 +48,33 @@ public class HexGrid : MonoBehaviour
 
         pathRenderer = GetComponent<LineRenderer>();
 
+        Player player = GetComponent<Player>();
+
         gridCanvas = GetComponentInChildren<Canvas>();
         hexMesh = GetComponentInChildren<HexMesh>();
         
         cells = new HexCell[width,height];
 
-        map = MapGenerator.GenerateMap(width, height, islandSizeMin, islandSizeMax, numIslands, fractionHills, fractionForest, forestSizeMin, forestSizeMax, fractionDesert, desertSizeMin, desertSizeMax);
+        HexCoordinates[] civStartPoints = new HexCoordinates[numCivs];
+        map = MapGenerator.GenerateMap(width, height, islandSizeMin, islandSizeMax, numIslands, fractionHills, fractionForest, forestSizeMin, forestSizeMax, fractionDesert, desertSizeMin, desertSizeMax, numCivs, out civStartPoints);
 
         for (int x = 0; x < width; x++)
         {
             for (int z = 0; z < height; z++)
             {
                 CreateCell(x, z, map[x,z]);
+            }
+        }
+
+        for(int i = 0; i < numCivs; i++)
+        {
+            Debug.Log(civStartPoints[i].ToString());
+            Vector3 cellPos = cells[civStartPoints[i].X, civStartPoints[i].Z].transform.position;
+            Unit unit = Instantiate<Unit>(defaultUnit, cellPos + Vector3.up, Quaternion.identity, transform);
+            unit.UnitCivilization = Civilizations.civs[Random.Range(0, Civilizations.defaultCivsLength)];
+            if(i == 0)
+            {
+                player.unit = unit;
             }
         }
     }

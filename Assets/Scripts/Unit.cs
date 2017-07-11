@@ -9,6 +9,7 @@ public class Unit : MonoBehaviour {
     public int canMoveThisTurn = 3;
     public bool moveUnit = false;
     public HexCoordinates target;
+    Civilization civ;
 
     HexGrid grid;
     List<HexCell> path;
@@ -23,12 +24,25 @@ public class Unit : MonoBehaviour {
         }
     }
 
+    public Civilization UnitCivilization
+    {
+        get
+        {
+            return civ;
+        }
+        set
+        {
+            civ = value;
+            gameObject.GetComponent<Renderer>().material.color = civ.PrimaryColour;
+        }
+    }
+
 	// Use this for initialization
 	void Start ()
     {
         grid = gameObject.GetComponentInParent<HexGrid>();
         player = gameObject.GetComponentInParent<Player>();
-	}
+    }
 	
 	// Update is called once per frame
 
