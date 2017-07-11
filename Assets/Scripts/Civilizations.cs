@@ -7,7 +7,7 @@ public static class Civilizations
     public static Dictionary<int,Civilization> civs = new Dictionary<int, Civilization>
     {
         //Starting Civs
-        { (int)defaultCivs.Aztecs,  new Civilization() },
+        { (int)defaultCivs.Aztecs,  new Civilization(new Color(0.921f,0.69f,0.208f), new Color(0.867f,0.118f,0.184f), "Aztecs", "Aztecs", "Aztec") },
         { (int)defaultCivs.Celts,   new Civilization(new Color(0,0.5f,0), Color.white, "Celts", "Celts", "Celtic") },
         { (int)defaultCivs.China,   new Civilization(Color.green,Color.white, "China","China", "Chinese") },
         { (int)defaultCivs.Egypt,   new Civilization(Color.yellow, new Color(1,0,1), "Egypt", "Egypt", "Egyptian") },
@@ -20,7 +20,7 @@ public static class Civilizations
         { (int)defaultCivs.Netherlands, new Civilization(new Color(1,0.5f,0), Color.white, "Netherlands", "The Netherlands", "Dutch") },
         { (int)defaultCivs.Rome,    new Civilization(new Color(1,0,1), Color.yellow, "Rome", "The Roman Empire", "Roman" ) },
         { (int)defaultCivs.Russia,  new Civilization(Color.yellow,Color.black,"Russia", "Russia", "Russian") },
-        { (int)defaultCivs.Spain,   new Civilization() },
+        { (int)defaultCivs.Spain,   new Civilization(new Color(0.565f,0.302f,0.239f), new Color(0.847f,0.306f,0.125f), "Spain", "Spain", "Spanish") },
         { (int)defaultCivs.USA,     new Civilization(Color.blue, Color.white, "USA", "United States of America", "American") },
         
         //Branching Civs
@@ -29,7 +29,7 @@ public static class Civilizations
         { (int)defaultCivs.PRC,     new Civilization(Color.red,Color.yellow, "PRC", "People's Republic of China", "PRC") },
         { (int)defaultCivs.USSR,    new Civilization(Color.red,Color.yellow,"USSR", "Union of Soviet Socialist Republics", "Soviet") }
 
-        //City States
+        //City States  
         
     };
 }
