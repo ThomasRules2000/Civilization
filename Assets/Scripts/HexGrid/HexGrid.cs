@@ -75,6 +75,11 @@ public class HexGrid : MonoBehaviour
             if(i == 0)
             {
                 player.unit = unit;
+                player.PlayerCivilization = unit.UnitCivilization;
+            }
+            else
+            {
+                unit.gameObject.AddComponent<AI>();
             }
         }
     }

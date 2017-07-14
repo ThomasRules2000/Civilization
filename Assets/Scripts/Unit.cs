@@ -33,15 +33,15 @@ public class Unit : MonoBehaviour {
         set
         {
             civ = value;
-            gameObject.GetComponent<Renderer>().material.color = civ.PrimaryColour;
+            GetComponent<Renderer>().material.color = civ.PrimaryColour;
         }
     }
 
 	// Use this for initialization
 	void Start ()
     {
-        grid = gameObject.GetComponentInParent<HexGrid>();
-        player = gameObject.GetComponentInParent<Player>();
+        grid = GetComponentInParent<HexGrid>();
+        player = GetComponentInParent<Player>();
     }
 	
 	// Update is called once per frame
@@ -92,6 +92,9 @@ public class Unit : MonoBehaviour {
         {
             canMoveThisTurn = 1;
         }
-        grid.UpdateLine(path, grid.cells[currentCoords.X, currentCoords.Z]);
+        if(civ == player.PlayerCivilization)
+        {
+            grid.UpdateLine(path, grid.cells[currentCoords.X, currentCoords.Z]);
+        }
     }
 }

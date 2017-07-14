@@ -73,6 +73,24 @@ public class Civilization
             return secondaryCol;
         }
     }
+
+    public override string ToString()
+    {
+        return civShortName;
+    }
+
+    public string ToStringLong()
+    {
+        return civLongName;
+    }
+
+    public string Nationality
+    {
+        get
+        {
+            return civNationality;
+        }
+    }
 }
 
 public enum defaultStartingCivs

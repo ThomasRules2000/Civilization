@@ -19,11 +19,26 @@ public class Player : MonoBehaviour {
 
     int turnNo = 1;
     public Text turnCounterText;
+    public Text civNameText;
 
     HexGrid grid;
 
     public Unit unit;
     List<Unit> units = new List<Unit>();
+
+    Civilization civ;
+    public Civilization PlayerCivilization
+    {
+        get
+        {
+            return civ;
+        }
+        set
+        {
+            civ = value;
+            civNameText.text = civ.ToString();
+        }
+    }
 
     private void Start()
     {
@@ -192,8 +207,16 @@ public class Player : MonoBehaviour {
     {
         if(trans.GetComponent<Unit>() != null)
         {
-            unit = trans.GetComponent<Unit>();
-            return true;
+            Unit transUnit = trans.GetComponent<Unit>();
+            if(transUnit.UnitCivilization == civ)
+            {
+                unit = transUnit;
+                return true;
+            }
+            else
+            {
+                return false;
+            }   
         }
         else
         {
