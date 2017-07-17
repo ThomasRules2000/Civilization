@@ -55,7 +55,7 @@ public class HexGrid : MonoBehaviour
         
         cells = new HexCell[width,height];
 
-        HexCoordinates[] civStartPoints = new HexCoordinates[numCivs];
+        List<HexCoordinates> civStartPoints = new List<HexCoordinates>(numCivs);
         map = MapGenerator.GenerateMap(width, height, islandSizeMin, islandSizeMax, numIslands, fractionHills, fractionForest, forestSizeMin, forestSizeMax, fractionDesert, desertSizeMin, desertSizeMax, numCivs, out civStartPoints);
 
         for (int x = 0; x < width; x++)

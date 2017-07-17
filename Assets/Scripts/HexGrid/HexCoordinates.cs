@@ -93,6 +93,27 @@ public struct HexCoordinates
         return neighbours;
     }
 
+    public static List<HexCoordinates> GetTwoTileRad(HexCoordinates coords)
+    {
+        List<HexCoordinates> neighbours = new List<HexCoordinates>();
+        neighbours.AddRange(GetNeighbours(coords)); //Single Tile Dist
+
+        neighbours.Add(new HexCoordinates(coords.X, coords.Z + 2));      //NE
+        neighbours.Add(new HexCoordinates(coords.X + 1, coords.Z + 1));  //NEE
+        neighbours.Add(new HexCoordinates(coords.X + 2, coords.Z));      //E
+        neighbours.Add(new HexCoordinates(coords.X + 2, coords.Z - 1));  //SEE
+        neighbours.Add(new HexCoordinates(coords.X + 2, coords.Z - 2));  //SE
+        neighbours.Add(new HexCoordinates(coords.X + 1, coords.Z - 2));  //S
+        neighbours.Add(new HexCoordinates(coords.X, coords.Z - 2));      //SW
+        neighbours.Add(new HexCoordinates(coords.X - 1, coords.Z - 1));  //SWW
+        neighbours.Add(new HexCoordinates(coords.X - 2, coords.Z));      //W
+        neighbours.Add(new HexCoordinates(coords.X - 2, coords.Z + 1));  //NWW
+        neighbours.Add(new HexCoordinates(coords.X - 2, coords.Z + 2));  //NW
+        neighbours.Add(new HexCoordinates(coords.X - 1, coords.Z + 2));  //N
+
+        return neighbours;
+    }
+
     public override string ToString()
     {
         return "(" + X.ToString() + ", " + Y.ToString() + ", " + Z.ToString() + ")";

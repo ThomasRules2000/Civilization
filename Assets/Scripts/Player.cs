@@ -116,7 +116,7 @@ public class Player : MonoBehaviour {
                 camMovement = new Vector2((Camera.main.transform.position.x - hit.point.x) * zoomSpeed / panMult, (Camera.main.transform.position.z - hit.point.z) * zoomSpeed / panMult);
             }
 
-            if (Camera.main.transform.position.y + zoomSpeed < maxZoomedOut)
+            if (Camera.main.transform.position.y + zoomSpeed <= maxZoomedOut)
             {
                 Camera.main.transform.Translate(camMovement.x, +zoomSpeed, camMovement.y, Space.World);
                 Camera.main.transform.rotation = Quaternion.Euler(Camera.main.transform.eulerAngles.x + rotationStep, Camera.main.transform.eulerAngles.y, Camera.main.transform.eulerAngles.z);

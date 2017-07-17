@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class MapGenerator {
 
-    public static HexType[,] GenerateMap(int width, int height, int islandSizeMin, int islandSizeMax, int numIslands, float fractionHills, float fractionForest, int forestSizeMin, int forestSizeMax, float fractionDesert, int desertSizeMin, int desertSizeMax, int numCivs, out HexCoordinates[] civStartPoints)
+    public static HexType[,] GenerateMap(int width, int height, int islandSizeMin, int islandSizeMax, int numIslands, float fractionHills, float fractionForest, int forestSizeMin, int forestSizeMax, float fractionDesert, int desertSizeMin, int desertSizeMax, int numCivs, out List<HexCoordinates> civStartPoints)
     {
         HexType[,] map = new HexType[width, height];
 
@@ -191,12 +191,18 @@ public static class MapGenerator {
         return typeTiles;
     }
 
-    static HexCoordinates[] getStartPoints(HashSet<HexCoordinates> islandTiles, int numCivs, int width, int height)
+    static List<HexCoordinates> getStartPoints(HashSet<HexCoordinates> islandTiles, int numCivs, int width, int height)
     {
-        HexCoordinates[] startPoints = new HexCoordinates[numCivs];
+        List<HexCoordinates> startPoints = new List<HexCoordinates>(numCivs);
         for(int i = 0; i < numCivs; i++)
         {
-            startPoints[i] = islandTiles.ElementAt<HexCoordinates>(Random.Range(0, islandTiles.Count));
+            HexCoordinates newPoint;
+            do
+            {
+                newPoint = islandTiles.ElementAt<HexCoordinates>(Random.Range(0, islandTiles.Count));
+            }
+            while ((startPoints.Intersect(HexCoordinates.GetTwoTileRad(newPoint)).Count() > 0) || startPoints.Contains(newPoint));
+            startPoints.Add(newPoint);
         }
         return startPoints;
     }
