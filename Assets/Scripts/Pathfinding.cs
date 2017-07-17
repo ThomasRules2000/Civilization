@@ -40,11 +40,27 @@ public class Pathfinding : MonoBehaviour {
                 //Debug.Log("Neighbour: " + neighbourCoords.ToString());
                 HexCoordinates neighbourOffsetCoords = (HexCoordinates.ToOffsetCoordinates(neighbourCoords));
                 //Debug.Log(neighbourCoords.ToString() + " ==> " + neighbourOffsetCoords.ToString());
-                if (neighbourOffsetCoords.X >= grid.width || neighbourOffsetCoords.X < 0 || neighbourOffsetCoords.Z >= grid.height || neighbourOffsetCoords.Z < 0)
+                int xOffset = neighbourOffsetCoords.X;
+                if (xOffset >= grid.width)
                 {
-                    continue;
+                    xOffset -= grid.width;
                 }
-                HexCell neighbour = grid.cells[neighbourOffsetCoords.X, neighbourOffsetCoords.Z];
+                else if (xOffset < 0)
+                {
+                    xOffset += grid.width;
+                }
+
+                int zOffset = neighbourOffsetCoords.Z;
+                if (zOffset >= grid.height)
+                {
+                    zOffset -= grid.height;
+                }
+                else if (zOffset < 0)
+                {
+                    zOffset += grid.height;
+                }
+
+                HexCell neighbour = grid.cells[xOffset, zOffset];
                 if(((!canWaterTravel && neighbour.Type.isWater || !canLandTravel && !neighbour.Type.isWater) && !(neighbour.Type == HexType.types[HexType.typeKeys.city])) || closedSet.Contains(neighbour))
                 {
                     continue;
@@ -94,7 +110,13 @@ public class Pathfinding : MonoBehaviour {
 
     static float GetDistance(HexCoordinates nodeA, HexCoordinates nodeB)
     {
-        return Mathf.Sqrt(((nodeA.X - nodeB.X) * (nodeA.X - nodeB.X)) + (nodeA.Y - nodeB.Y) * (nodeA.Y - nodeB.Y) + (nodeA.Z - nodeB.Z) * (nodeA.Z - nodeB.Z));
+        float normalDist = Mathf.Sqrt(((nodeA.X - nodeB.X) * (nodeA.X - nodeB.X)) + (nodeA.Y - nodeB.Y) * (nodeA.Y - nodeB.Y) + (nodeA.Z - nodeB.Z) * (nodeA.Z - nodeB.Z));
+
+        float xLowDist = Mathf.Sqrt(((nodeA.X - nodeB.X - grid.width) * (nodeA.X - nodeB.X - grid.width) + (nodeA.Y - nodeB.Y) * (nodeA.Y - nodeB.Y) + (nodeA.Z - nodeB.Z) * (nodeA.Z - nodeB.Z)));
+
+        float xHighDist = Mathf.Sqrt(((nodeA.X - nodeB.X + grid.width) * (nodeA.X - nodeB.X + grid.width) + (nodeA.Y - nodeB.Y) * (nodeA.Y - nodeB.Y) + (nodeA.Z - nodeB.Z) * (nodeA.Z - nodeB.Z)));
+
+        return Mathf.Min(normalDist, xLowDist, xHighDist);
     }
 
     public static Vector3[] toVector3(List<HexCell> path)
