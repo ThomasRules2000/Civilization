@@ -68,8 +68,24 @@ public class Unit : MonoBehaviour {
             else
             {
                 float step = movementSpeed * Time.deltaTime / path[0].Type.movementCost;
-                transform.position = Vector3.MoveTowards(transform.position,
-                    new Vector3(path[0].transform.position.x, transform.position.y, path[0].transform.position.z), step);
+
+                float dist = transform.position.x - path[0].transform.position.x;
+
+                if (Mathf.Abs(dist) > HexMetrics.outerRad * 2f)
+                {
+                    if(Mathf.Abs(dist) - grid.width - 1 >= step)
+                    {
+                        transform.localPosition += Vector3.left * grid.width * HexMetrics.innerRad * 2f * Mathf.Sign(dist);
+                    }
+                    else
+                    {
+                        transform.position = Vector3.MoveTowards(transform.position, new Vector3(-path[0].transform.position.x, transform.position.y, path[0].transform.position.z), step);
+                    }
+                }
+                else
+                {
+                    transform.position = Vector3.MoveTowards(transform.position, new Vector3(path[0].transform.position.x, transform.position.y, path[0].transform.position.z), step);
+                }
             }                       
         }
         else //Move to centre of cell
