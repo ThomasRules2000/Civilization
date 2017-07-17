@@ -30,6 +30,7 @@ public class HexGrid : MonoBehaviour
     public int maxDesertDistFromEquator = 5;
 
     public int numCivs = 2;
+    public List<Civilization> civsInGame = new List<Civilization>();
     public Unit defaultUnit;
 
     public HexCell cellPrefab;
@@ -41,9 +42,14 @@ public class HexGrid : MonoBehaviour
     HexMesh hexMesh;
     void Awake()
     {
+        //Error Checks
         if (fractionHills + fractionForest + fractionDesert > 1)
         {
             throw new System.Exception("Total Fractions of Tiles must be less than 1!");
+        }
+        if (numCivs > Civilizations.defaultCivsLength)
+        {
+            throw new System.Exception("Too Many Civs in Game! Must be less than " + Civilizations.defaultCivsLength);
         }
 
         pathRenderer = GetComponent<LineRenderer>();
@@ -71,7 +77,12 @@ public class HexGrid : MonoBehaviour
             Debug.Log(civStartPoints[i].ToString());
             Vector3 cellPos = cells[civStartPoints[i].X, civStartPoints[i].Z].transform.position;
             Unit unit = Instantiate<Unit>(defaultUnit, cellPos + Vector3.up, Quaternion.identity, transform);
-            unit.UnitCivilization = Civilizations.civs[Random.Range(0, Civilizations.defaultCivsLength)];
+            do
+            {
+                unit.UnitCivilization = Civilizations.civs[Random.Range(0, Civilizations.defaultCivsLength)];
+            } while (civsInGame.Contains(unit.UnitCivilization));
+            civsInGame.Add(unit.UnitCivilization);
+
             if(i == 0)
             {
                 player.unit = unit;
