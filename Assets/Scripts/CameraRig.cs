@@ -68,6 +68,15 @@ public class CameraRig : MonoBehaviour {
         }
 
         transform.Translate(horizAxis, 0f, vertAxis, Space.World);
+
+        if(transform.position.x > grid.width * HexMetrics.innerRad * 2f)
+        {
+            transform.position += Vector3.left * grid.width * HexMetrics.innerRad * 2f;
+        }
+        else if(transform.position.x < 0)
+        {
+            transform.position += Vector3.right * grid.width * HexMetrics.innerRad * 2f;
+        }
     }
 
     public void ZoomIn()

@@ -40,6 +40,12 @@ public class Pathfinding : MonoBehaviour {
                 //Debug.Log("Neighbour: " + neighbourCoords.ToString());
                 HexCoordinates neighbourOffsetCoords = (HexCoordinates.ToOffsetCoordinates(neighbourCoords));
                 //Debug.Log(neighbourCoords.ToString() + " ==> " + neighbourOffsetCoords.ToString());
+
+                if (neighbourOffsetCoords.Z >= grid.height || neighbourOffsetCoords.Z < 0)
+                {
+                    continue;
+                }
+
                 int xOffset = neighbourOffsetCoords.X;
                 if (xOffset >= grid.width)
                 {
@@ -50,17 +56,7 @@ public class Pathfinding : MonoBehaviour {
                     xOffset += grid.width;
                 }
 
-                int zOffset = neighbourOffsetCoords.Z;
-                if (zOffset >= grid.height)
-                {
-                    zOffset -= grid.height;
-                }
-                else if (zOffset < 0)
-                {
-                    zOffset += grid.height;
-                }
-
-                HexCell neighbour = grid.cells[xOffset, zOffset];
+                HexCell neighbour = grid.cells[xOffset, neighbourOffsetCoords.Z];
                 if(((!canWaterTravel && neighbour.Type.isWater || !canLandTravel && !neighbour.Type.isWater) && !(neighbour.Type == HexType.types[HexType.typeKeys.city])) || closedSet.Contains(neighbour))
                 {
                     continue;
