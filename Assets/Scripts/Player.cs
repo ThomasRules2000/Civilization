@@ -15,6 +15,9 @@ public class Player : MonoBehaviour {
     public float camTranslationSpeed = 20;
     public float mouseScrollArea = 20;
 
+    public Transform cameraRig;
+    Camera[] cameras;
+
     float rotationStep;
 
     int turnNo = 1;
@@ -49,9 +52,17 @@ public class Player : MonoBehaviour {
 
         turnCounterText.text = "Turn: " + turnNo;
 
+
+        cameras = cameraRig.GetComponentsInChildren<Camera>();
         rotationStep = zoomSpeed * (topRotation-bottomRotation) / (maxZoomedOut - maxZoomedIn);
-        Camera.main.transform.position = new Vector3(unit.transform.position.x, maxZoomedIn, unit.transform.position.z - (maxZoomedIn / Mathf.Tan(Mathf.Deg2Rad * bottomRotation)));
-        Camera.main.transform.rotation = Quaternion.Euler(bottomRotation, Camera.main.transform.eulerAngles.y, Camera.main.transform.eulerAngles.z);
+        cameraRig.transform.position = new Vector3(unit.transform.position.x, maxZoomedIn, unit.transform.position.z - (maxZoomedIn / Mathf.Tan(Mathf.Deg2Rad * bottomRotation)));
+        cameraRig.transform.rotation = Quaternion.Euler(bottomRotation, cameraRig.transform.eulerAngles.y, cameraRig.transform.eulerAngles.z);
+
+        cameras[0].transform.localPosition = Vector3.zero;
+        cameras[0].transform.localRotation = Quaternion.identity;
+
+        cameras[1].transform.localPosition = Vector3.left * grid.width * HexMetrics.innerRad * 2;
+        cameras[1].transform.localRotation = Quaternion.identity;
     }
 
     void Update ()
@@ -89,19 +100,27 @@ public class Player : MonoBehaviour {
         if (scrollAxis > 0f)
         {
             //Zoom In
-            if (Camera.main.transform.position.y - zoomSpeed >= maxZoomedIn)
+            if (cameraRig.transform.position.y - zoomSpeed >= maxZoomedIn)
             {
                 Vector2 camMovement = Vector2.zero;
 
-                Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+                Ray inputRay = cameras[0].ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
                 if (Physics.Raycast(inputRay, out hit))
                 {
-                    camMovement = new Vector2((hit.point.x - Camera.main.transform.position.x) * zoomSpeed / panMult, (hit.point.z - Camera.main.transform.position.z) * zoomSpeed / panMult);
+                    camMovement = new Vector2((hit.point.x - cameraRig.transform.position.x) * zoomSpeed / panMult, (hit.point.z - cameraRig.transform.position.z) * zoomSpeed / panMult);
+                }
+                else
+                {
+                    inputRay = cameras[1].ScreenPointToRay(Input.mousePosition);
+                    if (Physics.Raycast(inputRay, out hit))
+                    {
+                        camMovement = new Vector2((hit.point.x - cameraRig.transform.position.x) * zoomSpeed / panMult, (hit.point.z - cameraRig.transform.position.z) * zoomSpeed / panMult);
+                    }
                 }
 
-                Camera.main.transform.Translate(new Vector3(camMovement.x, -zoomSpeed, camMovement.y), Space.World);
-                Camera.main.transform.rotation = Quaternion.Euler(Camera.main.transform.eulerAngles.x - rotationStep, Camera.main.transform.eulerAngles.y, Camera.main.transform.eulerAngles.z);
+                cameraRig.transform.Translate(new Vector3(camMovement.x, -zoomSpeed, camMovement.y), Space.World);
+                cameraRig.transform.rotation = Quaternion.Euler(cameraRig.transform.eulerAngles.x - rotationStep, cameraRig.transform.eulerAngles.y, cameraRig.transform.eulerAngles.z);
             }
         }
         else if (scrollAxis < 0f)
@@ -109,44 +128,52 @@ public class Player : MonoBehaviour {
             //Zoom Out
             Vector2 camMovement = Vector2.zero;
 
-            Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Ray inputRay = cameras[0].ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             if (Physics.Raycast(inputRay, out hit))
             {
-                camMovement = new Vector2((Camera.main.transform.position.x - hit.point.x) * zoomSpeed / panMult, (Camera.main.transform.position.z - hit.point.z) * zoomSpeed / panMult);
+                camMovement = new Vector2((cameraRig.transform.position.x - hit.point.x) * zoomSpeed / panMult, (cameraRig.transform.position.z - hit.point.z) * zoomSpeed / panMult);
+            }
+            else
+            {
+                inputRay = cameras[1].ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(inputRay, out hit))
+                {
+                    camMovement = new Vector2((cameraRig.transform.position.x - hit.point.x) * zoomSpeed / panMult, (cameraRig.transform.position.z - hit.point.z) * zoomSpeed / panMult);
+                }
             }
 
-            if (Camera.main.transform.position.y + zoomSpeed <= maxZoomedOut)
+            if (cameraRig.transform.position.y + zoomSpeed <= maxZoomedOut)
             {
-                Camera.main.transform.Translate(camMovement.x, +zoomSpeed, camMovement.y, Space.World);
-                Camera.main.transform.rotation = Quaternion.Euler(Camera.main.transform.eulerAngles.x + rotationStep, Camera.main.transform.eulerAngles.y, Camera.main.transform.eulerAngles.z);
+                cameraRig.transform.Translate(camMovement.x, +zoomSpeed, camMovement.y, Space.World);
+                cameraRig.transform.rotation = Quaternion.Euler(cameraRig.transform.eulerAngles.x + rotationStep, cameraRig.transform.eulerAngles.y, cameraRig.transform.eulerAngles.z);
             }
         }
 
-        float horizAxis = Input.GetAxis("Horizontal") * Time.deltaTime * camTranslationSpeed * (Camera.main.transform.position.y - maxZoomedIn / 2);
-        float vertAxis = Input.GetAxis("Vertical") * Time.deltaTime * camTranslationSpeed * (Camera.main.transform.position.y - maxZoomedIn / 2);
+        float horizAxis = Input.GetAxis("Horizontal") * Time.deltaTime * camTranslationSpeed * (cameraRig.transform.position.y - maxZoomedIn / 2);
+        float vertAxis = Input.GetAxis("Vertical") * Time.deltaTime * camTranslationSpeed * (cameraRig.transform.position.y - maxZoomedIn / 2);
 
         float mPosX = Input.mousePosition.x;
         float mPosY = Input.mousePosition.y;
         if(mPosX >= 0 && mPosX < mouseScrollArea)
         {
-            horizAxis = -Time.deltaTime * camTranslationSpeed * (Camera.main.transform.position.y - maxZoomedIn / 2);
+            horizAxis = -Time.deltaTime * camTranslationSpeed * (cameraRig.transform.position.y - maxZoomedIn / 2);
         }
         else if(mPosX < Screen.width && mPosX >= Screen.width-mouseScrollArea)
         {
-            horizAxis = Time.deltaTime * camTranslationSpeed * (Camera.main.transform.position.y - maxZoomedIn / 2);
+            horizAxis = Time.deltaTime * camTranslationSpeed * (cameraRig.transform.position.y - maxZoomedIn / 2);
         }
 
         if (mPosY >= 0 && mPosY < mouseScrollArea)
         {
-            vertAxis = -Time.deltaTime * camTranslationSpeed * (Camera.main.transform.position.y - maxZoomedIn / 2);
+            vertAxis = -Time.deltaTime * camTranslationSpeed * (cameraRig.transform.position.y - maxZoomedIn / 2);
         }
         else if (mPosY < Screen.height && mPosY >= Screen.height - mouseScrollArea)
         {
-            vertAxis = Time.deltaTime * camTranslationSpeed * (Camera.main.transform.position.y - maxZoomedIn / 2);
+            vertAxis = Time.deltaTime * camTranslationSpeed * (cameraRig.transform.position.y - maxZoomedIn / 2);
         }
 
-        Camera.main.transform.Translate(horizAxis, 0f, vertAxis, Space.World);
+        cameraRig.transform.Translate(horizAxis, 0f, vertAxis, Space.World);
 	}
 
     public void NextTurn()
@@ -171,7 +198,7 @@ public class Player : MonoBehaviour {
 
     bool HandleInput(inputMethods method)
     {
-        Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray inputRay = cameras[0].ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         if (Physics.Raycast(inputRay, out hit))
         {
@@ -182,6 +209,21 @@ public class Player : MonoBehaviour {
             else if(method == inputMethods.selectUnit)
             {
                 return SelectUnit(hit.transform);
+            }
+        }
+        else
+        {
+            inputRay = cameras[1].ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(inputRay, out hit))
+            {
+                if (method == inputMethods.doPath)
+                {
+                    return DoPath(hit.point);
+                }
+                else if (method == inputMethods.selectUnit)
+                {
+                    return SelectUnit(hit.transform);
+                }
             }
         }
         return false;

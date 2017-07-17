@@ -50,7 +50,30 @@ public static class MapGenerator {
                     coords = possibleTiles[tileIndex];
                     //Debug.Log(coords.ToString());
                     possibleTiles.RemoveAt(tileIndex);
-                } while (coords.X >= width || coords.X < 0 || coords.Z >= height || coords.Z < 0 || allIslandTiles.Contains(coords));
+                } while (allIslandTiles.Contains(coords));
+
+                int xVal = coords.X;
+                if(xVal >= width)
+                {
+                    xVal -= width;
+                }
+                else if(xVal < 0)
+                {
+                    xVal += width;
+                }
+
+                int zVal = coords.Z;
+                if (zVal >= height)
+                {
+                    zVal -= height;
+                }
+                else if (zVal < 0)
+                {
+                    zVal += height;
+                }
+
+                coords = new HexCoordinates(xVal, zVal);
+
                 islandTiles.Add(coords);
                 map[coords.X, coords.Z] = HexType.types[HexType.typeKeys.plains];
 
