@@ -50,8 +50,8 @@ public class Player : MonoBehaviour {
         turnCounterText.text = "Turn: " + turnNo;
 
         rotationStep = zoomSpeed * (topRotation-bottomRotation) / (maxZoomedOut - maxZoomedIn);
-        Camera.main.transform.position = new Vector3(Camera.main.transform.position.x,maxZoomedOut,Camera.main.transform.position.z);
-        Camera.main.transform.rotation = Quaternion.Euler(topRotation, Camera.main.transform.eulerAngles.y, Camera.main.transform.eulerAngles.z);
+        Camera.main.transform.position = new Vector3(unit.transform.position.x, maxZoomedIn, unit.transform.position.z - (maxZoomedIn / Mathf.Tan(Mathf.Deg2Rad * bottomRotation)));
+        Camera.main.transform.rotation = Quaternion.Euler(bottomRotation, Camera.main.transform.eulerAngles.y, Camera.main.transform.eulerAngles.z);
     }
 
     void Update ()
@@ -89,7 +89,7 @@ public class Player : MonoBehaviour {
         if (scrollAxis > 0f)
         {
             //Zoom In
-            if (Camera.main.transform.position.y - zoomSpeed > maxZoomedIn)
+            if (Camera.main.transform.position.y - zoomSpeed >= maxZoomedIn)
             {
                 Vector2 camMovement = Vector2.zero;
 
