@@ -108,15 +108,11 @@ public class Pathfinding : MonoBehaviour {
 
     static float GetDistance(HexCoordinates nodeA, HexCoordinates nodeB)
     {
-        float normalDist = Mathf.Max(nodeA.X - nodeB.X, nodeA.Y - nodeB.Y, nodeA.Z - nodeB.Z);
+        int xDiff = Mathf.Min(Mathf.Abs(nodeA.X - nodeB.X), Mathf.Abs(nodeA.X - nodeB.X - grid.width), Mathf.Abs(nodeA.X - nodeB.X + grid.width));
+        int yDiff = Mathf.Abs(nodeA.Y - nodeB.Y);
+        int zDiff = Mathf.Abs(nodeA.Z - nodeB.Z);
 
-        //If x near left edge, a-b is -ve so add width
-        float xLowDist = Mathf.Max(nodeA.X - nodeB.X + grid.width, nodeA.Y - nodeB.Y, nodeA.Z - nodeB.Z);
-
-        //If x near right edge, a-b is +ve so subtract width
-        float xHighDist = Mathf.Max(nodeA.X - nodeB.X - grid.width, nodeA.Y - nodeB.Y, nodeA.Z - nodeB.Z);
-
-        return Mathf.Min(normalDist, xLowDist, xHighDist);
+        return Mathf.Min(xDiff + yDiff, xDiff + zDiff, yDiff + zDiff);
     }
 
     public static Vector3[] toVector3(List<HexCell> path)

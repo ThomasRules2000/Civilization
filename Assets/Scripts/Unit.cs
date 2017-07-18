@@ -109,7 +109,7 @@ public class Unit : MonoBehaviour {
         path = Pathfinding.FindPath(new HexCoordinates(Mathf.RoundToInt(transform.localPosition.x / (HexMetrics.innerRad * 2f)), Mathf.RoundToInt(transform.localPosition.z / (HexMetrics.outerRad * 1.5f))),
             HexCoordinates.ToOffsetCoordinates(target), true, true, tilesPerTurn, civ, isMilitary);
         HexCoordinates currentCoords = HexCoordinates.ToOffsetCoordinates(HexCoordinates.FromPosition(transform.localPosition));
-        if (grid.cells[currentCoords.X, currentCoords.Z].Type.isWater != path[0].Type.isWater)
+        if (grid.cells[currentCoords.X, currentCoords.Z].Type.isWater != path[0].Type.isWater && canMoveThisTurn > 1)
         {
             canMoveThisTurn = 1;
         }
