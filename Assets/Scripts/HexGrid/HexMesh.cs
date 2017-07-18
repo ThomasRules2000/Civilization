@@ -11,7 +11,6 @@ public class HexMesh : MonoBehaviour
     List<Vector3> vertices;
     List<int> triangles;
     List<Color> colours;
-    HexGrid grid;
 
     MeshCollider meshCollider;
 
@@ -19,7 +18,6 @@ public class HexMesh : MonoBehaviour
     {
         GetComponent<MeshFilter>().mesh = hexMesh = new Mesh();
         meshCollider = gameObject.AddComponent<MeshCollider>();
-        grid = GetComponentInParent<HexGrid>();
         hexMesh.name = "Hex Mesh";
         vertices = new List<Vector3>();
         triangles = new List<int>();

@@ -51,7 +51,7 @@ public class Unit : MonoBehaviour {
     {
         if (path != null && path.Count != 0 && canMoveThisTurn > 0 && moveUnit) //Follow Path
         {
-            if(transform.position.x == path[0].transform.position.x && transform.position.z == path[0].transform.position.z)
+            if(transform.position.x == path[0].transform.position.x && transform.position.z == path[0].transform.position.z) //If at node
             {
                 canMoveThisTurn -= path[0].Type.movementCost;
                 //Debug.Log(path[0].Type.ToString() + " " + path[1].Type.ToString());
@@ -64,6 +64,10 @@ public class Unit : MonoBehaviour {
                 if(player.unit == this)
                 {
                     grid.UpdateLine(path, currentCell);
+                }
+                if(path.Count > 0 && ((path[0].unitCiv != null && path[0].unitCiv != civ) || (isMilitary && path[0].militaryUnit != null) || (!isMilitary && path[0].passiveUnit != null)))
+                {
+                    UpdatePath();
                 }
             }
             else
