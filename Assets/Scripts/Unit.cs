@@ -71,9 +71,9 @@ public class Unit : MonoBehaviour {
 
                 float dist = transform.position.x - path[0].transform.position.x;
 
-                if (Mathf.Abs(dist) > HexMetrics.outerRad * 2f)
+                if (Mathf.Abs(dist) > HexMetrics.innerRad * 2f)
                 {
-                    if(Mathf.Abs(dist) - grid.width - 1 >= step)
+                    if(grid.width - Mathf.Abs(dist) <= step)
                     {
                         transform.localPosition += Vector3.left * grid.width * HexMetrics.innerRad * 2f * Mathf.Sign(dist);
                     }
