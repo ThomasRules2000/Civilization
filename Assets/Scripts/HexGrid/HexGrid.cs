@@ -83,6 +83,8 @@ public class HexGrid : MonoBehaviour
             } while (civsInGame.Contains(unit.UnitCivilization));
             civsInGame.Add(unit.UnitCivilization);
 
+            unit.name = unit.UnitCivilization.Nationality + " Unit";
+
             if(i == 0)
             {
                 player.unit = unit;
