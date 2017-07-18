@@ -7,12 +7,14 @@ public class HexCell : MonoBehaviour, IHeapItem<HexCell>
     public Color colour;
     public HexCoordinates coordinates;
 
+    public Civilization unitCiv = null;
+    public Unit militaryUnit;
+    public Unit passiveUnit;
+
     public float gCost;
     public float hCost;
     public HexCell parent;
     int heapIndex;
-
-    public Unit unitInCell;
 
     public float fCost
     {

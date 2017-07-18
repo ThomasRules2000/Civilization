@@ -13,7 +13,7 @@ public class Pathfinding : MonoBehaviour {
         grid = gameObject.GetComponent<HexGrid>();
     }
 
-    public static List<HexCell> FindPath(HexCoordinates startPos, HexCoordinates targetPos, bool canWaterTravel, bool canLandTravel, int tilesPerTurn) //A* Algorithm
+    public static List<HexCell> FindPath(HexCoordinates startPos, HexCoordinates targetPos, bool canWaterTravel, bool canLandTravel, int tilesPerTurn, Civilization unitCiv, bool isMilitary) //A* Algorithm
     {
         //Debug.Log(targetPos.ToString());
         HexCell startNode = grid.cells[startPos.X, startPos.Z];
@@ -57,7 +57,9 @@ public class Pathfinding : MonoBehaviour {
                 }
 
                 HexCell neighbour = grid.cells[xOffset, neighbourOffsetCoords.Z];
-                if(((!canWaterTravel && neighbour.Type.isWater || !canLandTravel && !neighbour.Type.isWater) && !(neighbour.Type == HexType.types[HexType.typeKeys.city])) || closedSet.Contains(neighbour))
+                if(((!canWaterTravel && neighbour.Type.isWater || !canLandTravel && !neighbour.Type.isWater) && !(neighbour.Type == HexType.types[HexType.typeKeys.city]))
+                    || (neighbour.unitCiv != null && neighbour.unitCiv != unitCiv) || (isMilitary && neighbour.militaryUnit != null) || (!isMilitary && neighbour.passiveUnit != null) 
+                    || closedSet.Contains(neighbour))
                 {
                     continue;
                 }
@@ -106,11 +108,13 @@ public class Pathfinding : MonoBehaviour {
 
     static float GetDistance(HexCoordinates nodeA, HexCoordinates nodeB)
     {
-        float normalDist = Mathf.Sqrt(((nodeA.X - nodeB.X) * (nodeA.X - nodeB.X)) + (nodeA.Y - nodeB.Y) * (nodeA.Y - nodeB.Y) + (nodeA.Z - nodeB.Z) * (nodeA.Z - nodeB.Z));
+        float normalDist = Mathf.Max(nodeA.X - nodeB.X, nodeA.Y - nodeB.Y, nodeA.Z - nodeB.Z);
 
-        float xLowDist = Mathf.Sqrt(((nodeA.X - nodeB.X - grid.width) * (nodeA.X - nodeB.X - grid.width) + (nodeA.Y - nodeB.Y) * (nodeA.Y - nodeB.Y) + (nodeA.Z - nodeB.Z) * (nodeA.Z - nodeB.Z)));
+        //If x near left edge, a-b is -ve so add width
+        float xLowDist = Mathf.Max(nodeA.X - nodeB.X + grid.width, nodeA.Y - nodeB.Y, nodeA.Z - nodeB.Z);
 
-        float xHighDist = Mathf.Sqrt(((nodeA.X - nodeB.X + grid.width) * (nodeA.X - nodeB.X + grid.width) + (nodeA.Y - nodeB.Y) * (nodeA.Y - nodeB.Y) + (nodeA.Z - nodeB.Z) * (nodeA.Z - nodeB.Z)));
+        //If x near right edge, a-b is +ve so subtract width
+        float xHighDist = Mathf.Max(nodeA.X - nodeB.X - grid.width, nodeA.Y - nodeB.Y, nodeA.Z - nodeB.Z);
 
         return Mathf.Min(normalDist, xLowDist, xHighDist);
     }

@@ -9,6 +9,7 @@ public class Unit : MonoBehaviour {
     public int canMoveThisTurn = 3;
     public bool moveUnit = false;
     public HexCoordinates target;
+    public bool isMilitary = false;
     Civilization civ;
 
     HexGrid grid;
@@ -54,7 +55,7 @@ public class Unit : MonoBehaviour {
             {
                 canMoveThisTurn -= path[0].Type.movementCost;
                 //Debug.Log(path[0].Type.ToString() + " " + path[1].Type.ToString());
-                if(path.Count > 1 && canMoveThisTurn > 1 && path[0].Type.isWater != path[1].Type.isWater)
+                if(path.Count > 1 && path[0].Type.isWater != path[1].Type.isWater)
                 {
                     canMoveThisTurn = 1;
                 }
@@ -71,7 +72,7 @@ public class Unit : MonoBehaviour {
 
                 float dist = transform.position.x - path[0].transform.position.x;
 
-                if (Mathf.Abs(dist) > HexMetrics.innerRad * 2f)
+                if (Mathf.Abs(dist) > HexMetrics.innerRad * 6f) //More than 3 tiles to deal with iffy pathfinding
                 {
                     if(grid.width - Mathf.Abs(dist) <= step)
                     {
@@ -102,9 +103,9 @@ public class Unit : MonoBehaviour {
     public void UpdatePath()
     {
         path = Pathfinding.FindPath(new HexCoordinates(Mathf.RoundToInt(transform.localPosition.x / (HexMetrics.innerRad * 2f)), Mathf.RoundToInt(transform.localPosition.z / (HexMetrics.outerRad * 1.5f))),
-            HexCoordinates.ToOffsetCoordinates(target), true, true, tilesPerTurn);
+            HexCoordinates.ToOffsetCoordinates(target), true, true, tilesPerTurn, civ, isMilitary);
         HexCoordinates currentCoords = HexCoordinates.ToOffsetCoordinates(HexCoordinates.FromPosition(transform.localPosition));
-        if(grid.cells[currentCoords.X, currentCoords.Z].Type.isWater != path[0].Type.isWater)
+        if (grid.cells[currentCoords.X, currentCoords.Z].Type.isWater != path[0].Type.isWater)
         {
             canMoveThisTurn = 1;
         }
