@@ -8,7 +8,7 @@ public class HexGrid : MonoBehaviour
 {
     public Text labelPrefab;
     Canvas gridCanvas;
-    public LineRenderer pathRenderer;
+    public LineRenderer[] pathRenderer;
 
     public bool showCoords = true;
 
@@ -52,7 +52,7 @@ public class HexGrid : MonoBehaviour
             throw new System.Exception("Too Many Civs in Game! Must be less than " + Civilizations.defaultCivsLength);
         }
 
-        pathRenderer = GetComponent<LineRenderer>();
+        pathRenderer = GetComponentsInChildren<LineRenderer>();
 
         Player player = GetComponent<Player>();
 
@@ -143,7 +143,7 @@ public class HexGrid : MonoBehaviour
     {
         if(path == null)
         {
-            pathRenderer.positionCount = 0;
+            pathRenderer[0].positionCount = 0;
             return;
         }
 
@@ -153,8 +153,39 @@ public class HexGrid : MonoBehaviour
         {
             tempPath.Insert(0, currentCell);
         }
-        pathRenderer.material.mainTextureScale = new Vector2(tempPath.Count / 1.5f, 1);
-        pathRenderer.positionCount = tempPath.Count;
-        pathRenderer.SetPositions(Pathfinding.toVector3(tempPath));
+
+        int breakPos = -1;
+        float dist = 0;
+        for(int i = 0; i < tempPath.Count - 1; i++)
+        {
+            dist = tempPath[i].transform.position.x - tempPath[i + 1].transform.position.x;
+            if (Mathf.Abs(dist) > HexMetrics.innerRad * 6f)
+            {
+                breakPos = i;
+                break;
+            }
+        }
+        
+        if(breakPos > 0)
+        {
+            List<Vector3> path1 = Pathfinding.toVector3(tempPath).Take(breakPos + 1).ToList();
+            path1.Add(tempPath[breakPos + 1].transform.position + Vector3.right * width * HexMetrics.innerRad * 2f * Mathf.Sign(dist));
+
+            pathRenderer[0].material.mainTextureScale = new Vector2((breakPos + 1) / 1.5f, 1);
+            pathRenderer[0].positionCount = breakPos + 2;
+            pathRenderer[0].SetPositions(path1.ToArray());
+
+            pathRenderer[1].material.mainTextureScale = new Vector2((tempPath.Count - breakPos - 1) / 1.5f, 1);
+            pathRenderer[1].positionCount = tempPath.Count - breakPos - 1;
+            pathRenderer[1].SetPositions(Pathfinding.toVector3(tempPath).Skip(breakPos + 1).ToArray());
+        }
+        else
+        {
+            pathRenderer[0].material.mainTextureScale = new Vector2(tempPath.Count / 1.5f, 1);
+            pathRenderer[0].positionCount = tempPath.Count;
+            pathRenderer[0].SetPositions(Pathfinding.toVector3(tempPath));
+
+            pathRenderer[1].positionCount = 0;
+        }
     }
 }
