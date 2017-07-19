@@ -75,7 +75,8 @@ public class HexGrid : MonoBehaviour
         for(int i = 0; i < numCivs; i++)
         {
             Debug.Log(civStartPoints[i].ToString());
-            Vector3 cellPos = cells[civStartPoints[i].X, civStartPoints[i].Z].transform.position;
+            HexCell cell = cells[civStartPoints[i].X, civStartPoints[i].Z];
+            Vector3 cellPos = cell.transform.position;
             Unit unit = Instantiate<Unit>(defaultUnit, cellPos + Vector3.up, Quaternion.identity, transform);
             do
             {
@@ -84,6 +85,7 @@ public class HexGrid : MonoBehaviour
             civsInGame.Add(unit.UnitCivilization);
 
             unit.name = unit.UnitCivilization.Nationality + " Unit";
+            unit.currentCell = cell;
 
             if(i == 0)
             {

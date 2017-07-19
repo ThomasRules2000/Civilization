@@ -11,6 +11,7 @@ public class Unit : MonoBehaviour {
     public HexCoordinates target;
     public bool isMilitary = false;
     Civilization civ;
+    public HexCell currentCell;
 
     HexGrid grid;
     List<HexCell> path;
@@ -95,12 +96,16 @@ public class Unit : MonoBehaviour {
         }
         else //Move to centre of cell
         {
+            currentCell.militaryUnit = null;
+            currentCell.unitCiv = null;
             moveUnit = false; //For check script
             float step = movementSpeed * Time.deltaTime * 0.5f;
             HexCoordinates currentCoords = HexCoordinates.ToOffsetCoordinates(HexCoordinates.FromPosition(transform.position));
-            Vector3 centre = grid.cells[currentCoords.X, currentCoords.Z].transform.position;
-            transform.position = Vector3.MoveTowards(transform.position,
-                new Vector3(centre.x, transform.position.y, centre.z), step);
+            currentCell = grid.cells[currentCoords.X, currentCoords.Z];
+            Vector3 centre = currentCell.transform.position;
+            transform.position = Vector3.MoveTowards(transform.position, new Vector3(centre.x, transform.position.y, centre.z), step);
+            currentCell.unitCiv = civ;
+            currentCell.militaryUnit = this;
         }
     }
 
