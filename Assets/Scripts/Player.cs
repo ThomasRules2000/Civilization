@@ -16,6 +16,8 @@ public class Player : MonoBehaviour {
     public Unit unit;
     List<Unit> units = new List<Unit>();
 
+    public bool[,] fowMap;
+
     Civilization civ;
     public Civilization PlayerCivilization
     {
@@ -37,10 +39,9 @@ public class Player : MonoBehaviour {
 
         grid = GetComponent<HexGrid>();
 
-        turnCounterText.text = "Turn: " + turnNo;
+        fowMap = new bool[grid.width, grid.height];
 
-
-        
+        turnCounterText.text = "Turn: " + turnNo;       
     }
 
     void Update ()

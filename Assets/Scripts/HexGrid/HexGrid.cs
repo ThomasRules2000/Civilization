@@ -29,6 +29,8 @@ public class HexGrid : MonoBehaviour
     public int desertSizeMax = 10;
     public int tundraHeight = 3;
 
+    public List<Transform> clouds;
+
     public int numCivs = 2;
     public List<Civilization> civsInGame = new List<Civilization>();
     public Unit defaultUnit;
@@ -99,6 +101,28 @@ public class HexGrid : MonoBehaviour
             {
                 player.unit = unit;
                 player.PlayerCivilization = unit.UnitCivilization;
+                Destroy(cell.cloud.gameObject);
+                foreach(HexCoordinates coords in HexCoordinates.GetTwoTileRad(cell.coordinates))
+                {
+                    HexCoordinates offsetCoords = HexCoordinates.ToOffsetCoordinates(coords);
+
+                    if (offsetCoords.Z >= height || offsetCoords.Z < 0)
+                    {
+                        continue;
+                    }
+
+                    int xVal = offsetCoords.X;
+                    if (xVal >= width)
+                    {
+                        xVal -= width;
+                    }
+                    else if (xVal < 0)
+                    {
+                        xVal += width;
+                    }
+
+                    Destroy(cells[xVal, offsetCoords.Z].cloud.gameObject);
+                }
             }
             else
             {
@@ -142,6 +166,10 @@ public class HexGrid : MonoBehaviour
             cell.Type = HexType.types[HexType.typeKeys.ocean];
         }
         cell.isHill = isHill;
+
+        cell.cloud = Instantiate<Transform>(clouds[Random.Range(0, clouds.Count)]);
+        cell.cloud.SetParent(cell.transform);
+        cell.cloud.transform.localPosition = Vector3.zero;
 
         if (showCoords)
         {
