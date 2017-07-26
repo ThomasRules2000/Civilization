@@ -123,21 +123,23 @@ public struct HexCoordinates
         }
         else if (radius == 1)
         {
-            neighbours = HexCoordinates.GetNeighbours(coords);
+            neighbours.AddRange(HexCoordinates.GetNeighbours(coords));
         }
         else if (radius == 2)
         {
-            neighbours = HexCoordinates.GetTwoTileRad(coords);
+            neighbours.AddRange(HexCoordinates.GetTwoTileRad(coords));
             neighbours.AddRange(GetNeighbours(coords));
         }
         else
         {
             neighbours = HexCoordinates.GetTwoTileRad(coords);
+            List<HexCoordinates> newTiles = new List<HexCoordinates>();
             foreach (HexCoordinates c in neighbours)
             {
-                neighbours.Union(GetNTileRad(c, radius - 2));
+                newTiles.AddRange(GetNTileRad(c, radius - 2));
             }
             neighbours.AddRange(GetNeighbours(coords));
+            neighbours = neighbours.Union(newTiles).ToList();
         }
 
         return neighbours;
