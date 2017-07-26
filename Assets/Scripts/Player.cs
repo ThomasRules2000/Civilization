@@ -16,8 +16,6 @@ public class Player : MonoBehaviour {
     public Unit unit;
     List<Unit> units = new List<Unit>();
 
-    public bool[,] fowMap;
-
     Civilization civ;
     public Civilization PlayerCivilization
     {
@@ -38,8 +36,6 @@ public class Player : MonoBehaviour {
         units.AddRange(GetComponentsInChildren<Unit>());
 
         grid = GetComponent<HexGrid>();
-
-        fowMap = new bool[grid.width, grid.height];
 
         turnCounterText.text = "Turn: " + turnNo;       
     }

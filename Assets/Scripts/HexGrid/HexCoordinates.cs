@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 //Cube Coordinates
 [System.Serializable]
@@ -93,10 +94,9 @@ public struct HexCoordinates
         return neighbours;
     }
 
-    public static List<HexCoordinates> GetTwoTileRad(HexCoordinates coords)
+    static List<HexCoordinates> GetTwoTileRad(HexCoordinates coords)
     {
         List<HexCoordinates> neighbours = new List<HexCoordinates>();
-        neighbours.AddRange(GetNeighbours(coords)); //Single Tile Dist
 
         neighbours.Add(new HexCoordinates(coords.X, coords.Z + 2));      //NE
         neighbours.Add(new HexCoordinates(coords.X + 1, coords.Z + 1));  //NEE
@@ -110,6 +110,35 @@ public struct HexCoordinates
         neighbours.Add(new HexCoordinates(coords.X - 2, coords.Z + 1));  //NWW
         neighbours.Add(new HexCoordinates(coords.X - 2, coords.Z + 2));  //NW
         neighbours.Add(new HexCoordinates(coords.X - 1, coords.Z + 2));  //N
+
+        return neighbours;
+    }
+
+    public static List<HexCoordinates> GetNTileRad(HexCoordinates coords, int radius)
+    {
+        List<HexCoordinates> neighbours = new List<HexCoordinates>();
+        if (radius < 1)
+        {
+            return null;
+        }
+        else if (radius == 1)
+        {
+            neighbours = HexCoordinates.GetNeighbours(coords);
+        }
+        else if (radius == 2)
+        {
+            neighbours = HexCoordinates.GetTwoTileRad(coords);
+            neighbours.AddRange(GetNeighbours(coords));
+        }
+        else
+        {
+            neighbours = HexCoordinates.GetTwoTileRad(coords);
+            foreach (HexCoordinates c in neighbours)
+            {
+                neighbours.Union(GetNTileRad(c, radius - 2));
+            }
+            neighbours.AddRange(GetNeighbours(coords));
+        }
 
         return neighbours;
     }

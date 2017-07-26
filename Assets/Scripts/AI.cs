@@ -7,12 +7,12 @@ public class AI : MonoBehaviour {
     HexGrid grid;
     Unit unit;
 
-	// Use this for initialization
-	void Start ()
+    // Use this for initialization
+    void Start ()
     {
         grid = GetComponentInParent<HexGrid>();
         unit = GetComponent<Unit>();
-	}
+    }
 	
 	// Update is called once per frame
 	void Update ()

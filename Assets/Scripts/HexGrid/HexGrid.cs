@@ -101,28 +101,8 @@ public class HexGrid : MonoBehaviour
             {
                 player.unit = unit;
                 player.PlayerCivilization = unit.UnitCivilization;
-                Destroy(cell.cloud.gameObject);
-                foreach(HexCoordinates coords in HexCoordinates.GetTwoTileRad(cell.coordinates))
-                {
-                    HexCoordinates offsetCoords = HexCoordinates.ToOffsetCoordinates(coords);
-
-                    if (offsetCoords.Z >= height || offsetCoords.Z < 0)
-                    {
-                        continue;
-                    }
-
-                    int xVal = offsetCoords.X;
-                    if (xVal >= width)
-                    {
-                        xVal -= width;
-                    }
-                    else if (xVal < 0)
-                    {
-                        xVal += width;
-                    }
-
-                    Destroy(cells[xVal, offsetCoords.Z].cloud.gameObject);
-                }
+                RevealMap(cell.coordinates, 3);
+                
             }
             else
             {
@@ -227,6 +207,41 @@ public class HexGrid : MonoBehaviour
             pathRenderer[0].SetPositions(Pathfinding.toVector3(tempPath));
 
             pathRenderer[1].positionCount = 0;
+        }
+    }
+
+    public void RevealMap(HexCoordinates centreCoords, int radius)
+    {
+        HexCoordinates offsetCentreCoords = HexCoordinates.ToOffsetCoordinates(centreCoords);
+
+        if(cells[offsetCentreCoords.X, offsetCentreCoords.Z].cloud)
+        {
+            Destroy(cells[offsetCentreCoords.X, offsetCentreCoords.Z].cloud.gameObject);
+        }
+
+        foreach (HexCoordinates coords in HexCoordinates.GetNTileRad(centreCoords, radius))
+        {
+            HexCoordinates offsetCoords = HexCoordinates.ToOffsetCoordinates(coords);
+
+            if (offsetCoords.Z >= height || offsetCoords.Z < 0)
+            {
+                continue;
+            }
+
+            int xVal = offsetCoords.X;
+            if (xVal >= width)
+            {
+                xVal -= width;
+            }
+            else if (xVal < 0)
+            {
+                xVal += width;
+            }
+
+            if (cells[xVal, offsetCoords.Z].cloud)
+            {
+                Destroy(cells[xVal, offsetCoords.Z].cloud.gameObject);
+            }
         }
     }
 }

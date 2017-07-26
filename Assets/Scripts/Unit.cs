@@ -54,6 +54,11 @@ public class Unit : MonoBehaviour {
         {
             if(transform.position.x == path[0].transform.position.x && transform.position.z == path[0].transform.position.z) //If at node
             {
+                if(civ == player.PlayerCivilization)
+                {
+                    grid.RevealMap(HexCoordinates.FromPosition(transform.position), 3);
+                }
+
                 canMoveThisTurn -= path[0].Type.movementCost;
                 //Debug.Log(path[0].Type.ToString() + " " + path[1].Type.ToString());
                 if(path.Count > 1 && path[0].Type.isWater != path[1].Type.isWater)
@@ -118,7 +123,7 @@ public class Unit : MonoBehaviour {
         {
             canMoveThisTurn = 1;
         }
-        if(civ == player.PlayerCivilization)
+        if(player.unit == this)
         {
             grid.UpdateLine(path, grid.cells[currentCoords.X, currentCoords.Z]);
         }
