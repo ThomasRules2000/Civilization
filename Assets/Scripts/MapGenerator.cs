@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class MapGenerator {
 
-    public static HexType[,] GenerateMap(int width, int height, int islandSizeMin, int islandSizeMax, int numIslands, float fractionHills, float fractionForest, int forestSizeMin, int forestSizeMax, float fractionDesert, int desertSizeMin, int desertSizeMax, int numCivs, out List<HexCoordinates> civStartPoints)
+    public static HexType[,] GenerateMap(int width, int height, int islandSizeMin, int islandSizeMax, int numIslands, float fractionHills, float fractionForest, int forestSizeMin, int forestSizeMax, float fractionDesert, int desertSizeMin, int desertSizeMax, int tundraHeight, int numCivs, out List<HexCoordinates> civStartPoints, out List<HexCoordinates> hillCoords)
     {
         HexType[,] map = new HexType[width, height];
 
@@ -62,21 +62,32 @@ public static class MapGenerator {
                     xVal += width;
                 }
 
-                int zVal = coords.Z;
-
-                coords = new HexCoordinates(xVal, zVal);
+                coords = new HexCoordinates(xVal, coords.Z);
 
                 islandTiles.Add(coords);
-                map[coords.X, coords.Z] = HexType.types[HexType.typeKeys.plains];
+
+                if (coords.Z < tundraHeight || coords.Z >= height - tundraHeight)
+                {
+                    map[coords.X, coords.Z] = HexType.types[HexType.typeKeys.tundra];
+                }
+                else
+                {
+                    map[coords.X, coords.Z] = HexType.types[HexType.typeKeys.plains];
+                }
 
                 List<HexCoordinates> neighbours = HexCoordinates.GetNeighbours(coords);
 
-                for (int hc = 0; hc < neighbours.Count; hc++)
+                int hc = 0;
+                while(hc < neighbours.Count)
                 {
                     HexCoordinates neighbour = neighbours[hc];
                     if (islandTiles.Contains(neighbour))
                     {
-                        neighbours.Remove(neighbour);
+                        neighbours.RemoveAt(hc);
+                    }
+                    else
+                    {
+                        hc++;
                     }
                 }
 
@@ -86,10 +97,19 @@ public static class MapGenerator {
 
             foreach(HexCoordinates possTile in possibleTiles)
             {
-                //HexCoordinates possTileOffset = HexCoordinates.ToOffsetCoordinates(possTile);
-                if (possTile.X >= 0 && possTile.X < width && possTile.Z >= 0 && possTile.Z < height && map[possTile.X,possTile.Z] == null)
+                int xVal = possTile.X;
+                if (xVal >= width)
                 {
-                    map[possTile.X, possTile.Z] = HexType.types[HexType.typeKeys.coast];
+                    xVal -= width;
+                }
+                else if (xVal < 0)
+                {
+                    xVal += width;
+                }
+
+                if (possTile.Z >= 0 && possTile.Z < height && map[xVal,possTile.Z] == null)
+                {
+                    map[xVal, possTile.Z] = HexType.types[HexType.typeKeys.coast];
                 }
             }
         }
@@ -108,10 +128,9 @@ public static class MapGenerator {
             } while (hillTiles.Contains(coords));
 
             //Debug.Log(coords.ToString());
-            map[coords.X, coords.Z] = HexType.types[HexType.typeKeys.hill];
             hillTiles.Add(coords);
         }
-        allIslandTiles.ExceptWith(hillTiles);
+        hillCoords = hillTiles.ToList();
 
         HashSet<HexCoordinates> desertTiles = GenerateZones(out map, width, height, HexType.typeKeys.desert, fractionDesert, desertSizeMin, desertSizeMax, numAllIslandTiles, allIslandTiles, map);
         allIslandTiles.ExceptWith(desertTiles);
@@ -154,55 +173,45 @@ public static class MapGenerator {
                     tileIndex = Random.Range(0, possibleTiles.Count);
                     coords = possibleTiles[tileIndex];
                 } while (coords.X >= width || coords.X < 0 || coords.Z >= height || coords.Z < 0 || typeTiles.Contains(coords));
+
+                int xVal = coords.X;
+                if (xVal >= width)
+                {
+                    xVal -= width;
+                }
+                else if (xVal < 0)
+                {
+                    xVal += width;
+                }
+
+                coords = new HexCoordinates(xVal, coords.Z);
+
                 typeTiles.Add(coords);
 
-                mapOut[coords.X, coords.Z] = HexType.types[type];
-
+                if(map[xVal,coords.Z] == HexType.types[HexType.typeKeys.plains])
+                {
+                    mapOut[xVal, coords.Z] = HexType.types[type];
+                }
+                
                 List<HexCoordinates> neighbours = HexCoordinates.GetNeighbours(coords);
 
-                for (int hc = 0; hc < neighbours.Count; hc++)
+                int hc = 0;
+                while (hc < neighbours.Count)
                 {
                     HexCoordinates neighbour = neighbours[hc];
                     if (typeTiles.Contains(neighbour))
                     {
-                        neighbours.Remove(neighbour);
+                        neighbours.RemoveAt(hc);
+                    }
+                    else
+                    {
+                        hc++;
                     }
                 }
                 possibleTiles.AddRange(neighbours);
             }
         }
 
-        return typeTiles;
-    }
-
-    static HashSet<HexCoordinates> GenerateEncompassingZones(out HexType[,] mapOut, int width, int height, HexType.typeKeys type, float fractionType, int typeSizeMin, int typeSizeMax, int minDistFromEquator, int maxDistFromEquator, int numAllIslandTiles, HashSet<HexCoordinates> allIslandTiles, HexType[,] map)
-    {
-        mapOut = map;
-
-        HashSet<HexCoordinates> typeTiles = new HashSet<HexCoordinates>();
-        for(int i = 0; i < numAllIslandTiles * fractionType / (typeSizeMax - typeSizeMin + 1); i++)
-        {
-            int zoneSize = Random.Range(typeSizeMin, typeSizeMax);
-        }
-
-        int typeCentreIndex;
-        HexCoordinates centreCoords;
-        do
-        {
-            typeCentreIndex = Random.Range(0, allIslandTiles.Count);
-            centreCoords = allIslandTiles.ElementAt(typeCentreIndex);
-        } while (typeTiles.Contains(centreCoords));
-        typeTiles.Add(centreCoords);
-
-        List<HexCoordinates> possibleTiles = new List<HexCoordinates>();
-        possibleTiles.AddRange(HexCoordinates.GetNeighbours(centreCoords));
-
-        HashSet<HexCoordinates> thisTileNeighbours = allIslandTiles;
-        thisTileNeighbours.IntersectWith(HexCoordinates.GetNeighbours(centreCoords));
-        foreach(HexCoordinates hc in thisTileNeighbours)
-        {
-
-        }
         return typeTiles;
     }
 

@@ -27,7 +27,7 @@ public class HexGrid : MonoBehaviour
     public int forestSizeMax = 10;
     public int desertSizeMin = 1;
     public int desertSizeMax = 10;
-    public int maxDesertDistFromEquator = 5;
+    public int tundraHeight = 3;
 
     public int numCivs = 2;
     public List<Civilization> civsInGame = new List<Civilization>();
@@ -62,13 +62,21 @@ public class HexGrid : MonoBehaviour
         cells = new HexCell[width,height];
 
         List<HexCoordinates> civStartPoints = new List<HexCoordinates>(numCivs);
-        map = MapGenerator.GenerateMap(width, height, islandSizeMin, islandSizeMax, numIslands, fractionHills, fractionForest, forestSizeMin, forestSizeMax, fractionDesert, desertSizeMin, desertSizeMax, numCivs, out civStartPoints);
+        List<HexCoordinates> hillCoords = new List<HexCoordinates>();
+        map = MapGenerator.GenerateMap(width, height, islandSizeMin, islandSizeMax, numIslands, fractionHills, fractionForest, forestSizeMin, forestSizeMax, fractionDesert, desertSizeMin, desertSizeMax, tundraHeight, numCivs, out civStartPoints, out hillCoords);
 
         for (int x = 0; x < width; x++)
         {
             for (int z = 0; z < height; z++)
             {
-                CreateCell(x, z, map[x,z]);
+                if(hillCoords.Contains(new HexCoordinates(x, z)))
+                {
+                    CreateCell(x, z, map[x, z], true);
+                }
+                else
+                {
+                    CreateCell(x, z, map[x, z], false);
+                }        
             }
         }
 
@@ -113,7 +121,7 @@ public class HexGrid : MonoBehaviour
     }
 
     //Adds cells to array based on metrics, max width & max height
-    void CreateCell(int x, int z, HexType type)
+    void CreateCell(int x, int z, HexType type, bool isHill)
     {
         Vector3 pos;
         pos.x = (x + z * 0.5f - z / 2) * (HexMetrics.innerRad * 2f);
@@ -133,6 +141,7 @@ public class HexGrid : MonoBehaviour
         {
             cell.Type = HexType.types[HexType.typeKeys.ocean];
         }
+        cell.isHill = isHill;
 
         if (showCoords)
         {

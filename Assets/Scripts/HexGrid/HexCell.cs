@@ -6,6 +6,7 @@ public class HexCell : MonoBehaviour, IHeapItem<HexCell>
 {
     public Color colour;
     public HexCoordinates coordinates;
+    public bool isHill;
 
     public Civilization unitCiv = null;
     public Unit militaryUnit;

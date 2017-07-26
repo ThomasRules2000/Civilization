@@ -53,7 +53,7 @@ public class HexMesh : MonoBehaviour
 
         List<Vector3> linePoints = new List<Vector3>();
 
-        if(cell.Type == HexType.types[HexType.typeKeys.hill])
+        if(cell.isHill)
         {
             Vector3 hillCentre = new Vector3(centre.x, centre.y + HexMetrics.hillHeight, centre.z);
             Color shadedCol = new Color(cell.colour.r * 0.8f, cell.colour.g * 0.8f, cell.colour.b * 0.8f);
