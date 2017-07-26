@@ -8,7 +8,7 @@ public class HexCell : MonoBehaviour, IHeapItem<HexCell>
     public HexCoordinates coordinates;
     public bool isHill;
 
-    public Transform cloud;
+    public Cloud cloud;
 
     public Civilization unitCiv = null;
     public Unit militaryUnit;

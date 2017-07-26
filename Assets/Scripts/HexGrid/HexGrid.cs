@@ -29,7 +29,8 @@ public class HexGrid : MonoBehaviour
     public int desertSizeMax = 10;
     public int tundraHeight = 3;
 
-    public List<Transform> clouds;
+    public List<Cloud> clouds;
+    public float cloudFadeTime;
 
     public int numCivs = 2;
     public List<Civilization> civsInGame = new List<Civilization>();
@@ -147,8 +148,8 @@ public class HexGrid : MonoBehaviour
         }
         cell.isHill = isHill;
 
-        cell.cloud = Instantiate<Transform>(clouds[Random.Range(0, clouds.Count)]);
-        cell.cloud.SetParent(cell.transform);
+        cell.cloud = Instantiate<Cloud>(clouds[Random.Range(0, clouds.Count)]);
+        cell.cloud.transform.SetParent(cell.transform);
         cell.cloud.transform.localPosition = Vector3.zero;
 
         if (showCoords)
@@ -240,7 +241,8 @@ public class HexGrid : MonoBehaviour
 
             if (cells[xVal, offsetCoords.Z].cloud)
             {
-                Destroy(cells[xVal, offsetCoords.Z].cloud.gameObject);
+                Destroy(cells[xVal, offsetCoords.Z].cloud.gameObject, cloudFadeTime);
+                cells[xVal, offsetCoords.Z].cloud.fadeOut = true;
             }
         }
     }
