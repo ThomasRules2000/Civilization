@@ -168,7 +168,7 @@ public class HexGrid : MonoBehaviour
 
         cell.cloud = Instantiate<Cloud>(clouds[Random.Range(0, clouds.Count)]);
         cell.cloud.transform.SetParent(cell.transform);
-        cell.cloud.transform.localPosition = Vector3.zero;
+        cell.cloud.transform.localPosition = new Vector3(0, cell.cloud.transform.localPosition.y, 0);
 
         /*if (showCoords)
         {

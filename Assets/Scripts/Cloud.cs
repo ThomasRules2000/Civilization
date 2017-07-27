@@ -6,13 +6,13 @@ public class Cloud : MonoBehaviour {
 
     public bool fadeOut = false;
     HexGrid grid;
-    Renderer[] renderers;
+    Renderer renderer;
     float alphaPerSecond;
 
     void Start()
     {
         grid = transform.parent.GetComponentInParent<HexGrid>();
-        renderers = GetComponentsInChildren<Renderer>();
+        renderer = GetComponent<Renderer>();
 
         alphaPerSecond = 1f / grid.cloudFadeTime;
     }
@@ -22,10 +22,7 @@ public class Cloud : MonoBehaviour {
     {
         if (fadeOut)
         {
-            for(int i = 0; i < renderers.Length; i++)
-            {
-                renderers[i].material.color = new Color(renderers[i].material.color.r, renderers[i].material.color.g, renderers[i].material.color.b, renderers[i].material.color.a - alphaPerSecond * Time.deltaTime);
-            }
+            renderer.material.color = new Color(renderer.material.color.r, renderer.material.color.g, renderer.material.color.b, renderer.material.color.a - alphaPerSecond * Time.deltaTime);
         }
 	}
 }
