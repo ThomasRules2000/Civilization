@@ -66,7 +66,11 @@ public static class MapGenerator {
 
                 islandTiles.Add(coords);
 
-                if (coords.Z < tundraHeight || coords.Z >= height - tundraHeight)
+                if (coords.Z < tundraHeight - 1 || coords.Z > height - tundraHeight)
+                {
+                    map[coords.X, coords.Z] = HexType.types[HexType.typeKeys.tundra];
+                }
+                else if((coords.Z == tundraHeight - 1 || coords.Z == height - tundraHeight) && Random.value < 0.5f)
                 {
                     map[coords.X, coords.Z] = HexType.types[HexType.typeKeys.tundra];
                 }
