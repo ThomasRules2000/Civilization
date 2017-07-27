@@ -46,7 +46,7 @@ public class HexGrid : MonoBehaviour
     void Awake()
     {
         //Error Checks
-        if (fractionHills + fractionForest + fractionDesert > 1)
+        if (fractionForest + fractionDesert > 1)
         {
             throw new System.Exception("Total Fractions of Tiles must be less than 1!");
         }
