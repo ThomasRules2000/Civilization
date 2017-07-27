@@ -7,13 +7,17 @@ using UnityEngine.UI;
 public class HexGrid : MonoBehaviour
 {
     public Text labelPrefab;
-    Canvas gridCanvas;
+    //Canvas gridCanvas;
     public LineRenderer[] pathRenderer;
 
-    public bool showCoords = true;
+    //public bool showCoords = true;
 
     public int width = 6;
     public int height = 6;
+
+    public int chunkCountX = 10;
+    public int chunkCountZ = 10;
+    public HexGridChunk chunkPrefab;
 
     public int islandSizeMin = 3;
     public int islandSizeMax = 5;
@@ -39,10 +43,11 @@ public class HexGrid : MonoBehaviour
     public HexCell cellPrefab;
 
     public HexCell[,] cells;
+    public HexGridChunk[,] chunks;
 
     HexType[,] map;
 
-    HexMesh hexMesh;
+    //HexMesh hexMesh;
     void Awake()
     {
         //Error Checks
@@ -59,16 +64,29 @@ public class HexGrid : MonoBehaviour
 
         Player player = GetComponent<Player>();
 
-        gridCanvas = GetComponentInChildren<Canvas>();
-        hexMesh = GetComponentInChildren<HexMesh>();
-        
+        //gridCanvas = GetComponentInChildren<Canvas>();
+        //hexMesh = GetComponentInChildren<HexMesh>();
+
+        width = chunkCountX * HexMetrics.chunkSizeX;
+        height = chunkCountZ * HexMetrics.chunkSizeZ;
+
+        chunks = new HexGridChunk[chunkCountX, chunkCountZ];
         cells = new HexCell[width,height];
 
         List<HexCoordinates> civStartPoints = new List<HexCoordinates>(numCivs);
         List<HexCoordinates> hillCoords = new List<HexCoordinates>();
         map = MapGenerator.GenerateMap(width, height, islandSizeMin, islandSizeMax, numIslands, fractionHills, fractionForest, forestSizeMin, forestSizeMax, fractionDesert, desertSizeMin, desertSizeMax, tundraHeight, numCivs, out civStartPoints, out hillCoords);
 
-        for (int x = 0; x < width; x++)
+        for (int x = 0; x < chunkCountX; x++) //Chunks
+        {
+            for (int z = 0; z < chunkCountZ; z++)
+            {
+                HexGridChunk chunk = chunks[x, z] = Instantiate(chunkPrefab);
+                chunk.transform.SetParent(transform);
+            }
+        }
+
+        for (int x = 0; x < width; x++) //Cells
         {
             for (int z = 0; z < height; z++)
             {
@@ -112,10 +130,10 @@ public class HexGrid : MonoBehaviour
         }
     }
 
-    void Start()
+    /*void Start()
     {
         hexMesh.Triangulate(cells);
-    }
+    }*/
 
     public int MaxSize
     {
@@ -134,7 +152,7 @@ public class HexGrid : MonoBehaviour
         pos.z = z * HexMetrics.outerRad * 1.5f;
 
         HexCell cell = cells[x,z] = Instantiate<HexCell>(cellPrefab);
-        cell.transform.SetParent(transform, false);
+        //cell.transform.SetParent(transform, false);
         cell.transform.localPosition = pos;
         cell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
         cell.name = "Hex Cell " + cell.coordinates.ToString();
@@ -152,13 +170,26 @@ public class HexGrid : MonoBehaviour
         cell.cloud.transform.SetParent(cell.transform);
         cell.cloud.transform.localPosition = Vector3.zero;
 
-        if (showCoords)
+        /*if (showCoords)
         {
             Text label = Instantiate<Text>(labelPrefab);
-            label.rectTransform.SetParent(gridCanvas.transform, false);
+            //label.rectTransform.SetParent(gridCanvas.transform, false);
             label.rectTransform.anchoredPosition = new Vector2(pos.x, pos.z);
             label.text = cell.coordinates.ToStringOnSeparateLines();
-        }     
+        }*/
+
+        AddCellToChunk(x, z, cell);
+    }
+
+    void AddCellToChunk(int x, int z, HexCell cell)
+    {
+        int chunkX = x / HexMetrics.chunkSizeX;
+        int chunkZ = z / HexMetrics.chunkSizeZ;
+        HexGridChunk chunk = chunks[chunkX,chunkZ];
+
+        int localX = x - chunkX * HexMetrics.chunkSizeX;
+        int localZ = z - chunkZ * HexMetrics.chunkSizeZ;
+        chunk.AddCell(localX, localZ, cell);
     }
 
     public void UpdateLine(List<HexCell> path, HexCell currentCell)

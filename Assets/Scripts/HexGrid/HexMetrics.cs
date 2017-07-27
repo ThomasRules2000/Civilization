@@ -12,7 +12,7 @@ public static class HexMetrics
     const float hillOuterRad = outerRad * hillTopRatio;
     const float hillInnerRad = innerRad * hillTopRatio;
 
-    public const int chunkSizeX = 5; 
+    public const int chunkSizeX = 8; 
     public const int chunkSizeZ = 5;
 
     static Vector3[] corners =
