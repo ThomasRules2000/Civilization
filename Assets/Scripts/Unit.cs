@@ -101,7 +101,9 @@ public class Unit : MonoBehaviour {
 
                     grid.RevealMap(HexCoordinates.FromPosition(transform.position), 3);
 
-                    foreach (HexCoordinates coords in HexCoordinates.GetNTileRad(HexCoordinates.FromPosition(transform.position), 3))
+                    HexCoordinates currentPos = HexCoordinates.FromPosition(transform.position);
+
+                    foreach (HexCoordinates coords in HexCoordinates.GetNTileRad(currentPos, 3))
                     {
                         HexCoordinates offsetCoords = HexCoordinates.ToOffsetCoordinates(coords);
 
@@ -126,6 +128,10 @@ public class Unit : MonoBehaviour {
                             toUpdate.Add(grid.cells[xVal, coords.Z].chunk);
                         }
                     }
+
+                    HexCoordinates offsetPos = HexCoordinates.ToOffsetCoordinates(currentPos);
+
+                    grid.cells[offsetPos.X, offsetPos.Z].IsVisible = true;
 
                     foreach(HexGridChunk chunk in toUpdate)
                     {
