@@ -13,6 +13,20 @@ public class Unit : MonoBehaviour {
     Civilization civ;
     public HexCell currentCell;
 
+    public Renderer renderer;
+
+    public bool IsVisible
+    {
+        get
+        {
+            return renderer.enabled;
+        }
+        set
+        {
+            renderer.enabled = value;
+        }
+    }
+
     HexGrid grid;
     List<HexCell> path;
 
@@ -44,6 +58,7 @@ public class Unit : MonoBehaviour {
     {
         grid = GetComponentInParent<HexGrid>();
         player = GetComponentInParent<Player>();
+        renderer = GetComponent<Renderer>();
     }
 	
 	// Update is called once per frame
@@ -56,7 +71,66 @@ public class Unit : MonoBehaviour {
             {
                 if(civ == player.PlayerCivilization)
                 {
+                    List<HexGridChunk> toUpdate = new List<HexGridChunk>();
+
+                    foreach (HexCoordinates coords in HexCoordinates.GetNTileRad(currentCell.coordinates, 3))
+                    {
+                        HexCoordinates offsetCoords = HexCoordinates.ToOffsetCoordinates(coords);
+
+                        if (offsetCoords.Z < 0 || offsetCoords.Z >= grid.height)
+                        {
+                            continue;
+                        }
+                        int xVal = offsetCoords.X;
+
+                        if (xVal < 0)
+                        {
+                            xVal += grid.width;
+                        }
+                        else if(xVal >= grid.width)
+                        {
+                            xVal -= grid.width;
+                        }
+
+                        grid.cells[xVal, offsetCoords.Z].IsVisible = false;
+                        if (!toUpdate.Contains(grid.cells[xVal, coords.Z].chunk))
+                        {
+                            toUpdate.Add(grid.cells[xVal, coords.Z].chunk);
+                        }
+                    }
+
                     grid.RevealMap(HexCoordinates.FromPosition(transform.position), 3);
+
+                    foreach (HexCoordinates coords in HexCoordinates.GetNTileRad(HexCoordinates.FromPosition(transform.position), 3))
+                    {
+                        HexCoordinates offsetCoords = HexCoordinates.ToOffsetCoordinates(coords);
+
+                        if (offsetCoords.Z < 0 || offsetCoords.Z >= grid.height)
+                        {
+                            continue;
+                        }
+                        int xVal = offsetCoords.X;
+
+                        if (xVal < 0)
+                        {
+                            xVal += grid.width;
+                        }
+                        else if (xVal >= grid.width)
+                        {
+                            xVal -= grid.width;
+                        }
+
+                        grid.cells[xVal, offsetCoords.Z].IsVisible = true;
+                        if (!toUpdate.Contains(grid.cells[xVal, coords.Z].chunk))
+                        {
+                            toUpdate.Add(grid.cells[xVal, coords.Z].chunk);
+                        }
+                    }
+
+                    foreach(HexGridChunk chunk in toUpdate)
+                    {
+                        chunk.Refresh();
+                    }
                 }
 
                 canMoveThisTurn -= path[0].Type.movementCost;
@@ -65,7 +139,7 @@ public class Unit : MonoBehaviour {
                 {
                     canMoveThisTurn = 1;
                 }
-                HexCell currentCell = path[0];
+                currentCell = path[0];
                 path.RemoveAt(0);
                 if(player.unit == this)
                 {
