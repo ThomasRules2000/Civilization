@@ -229,7 +229,7 @@ public static class MapGenerator {
             {
                 newPoint = islandTiles.ElementAt<HexCoordinates>(Random.Range(0, islandTiles.Count));
             }
-            while ((startPoints.Intersect(HexCoordinates.GetNTileRad(newPoint,2)).Count() > 0) || startPoints.Contains(newPoint));
+            while ((startPoints.Intersect(HexCoordinates.GetNTileRad(newPoint,4)).Count() > 0) || startPoints.Contains(newPoint));
             startPoints.Add(newPoint);
         }
         return startPoints;
