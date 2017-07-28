@@ -12,9 +12,9 @@ public class MinimapCamera : MonoBehaviour {
         float xPos = (grid.width - 1) * HexMetrics.innerRad;
         float zPos = (grid.height - 1) * HexMetrics.outerRad * 0.75f;
 
-        Debug.Log(xPos.ToString() + ", " + zPos.ToString());
+        float yPos = zPos / Mathf.Tan(Mathf.PI / 6);
 
-        transform.position = new Vector3(xPos, 700, zPos);
+        transform.position = new Vector3(xPos, yPos, zPos);
 	}
 	
 	// Update is called once per frame
