@@ -149,6 +149,11 @@ public class Unit : MonoBehaviour {
                 {
                     UpdatePath();
                 }
+
+                if(civ != player.PlayerCivilization)
+                {
+                    IsVisible = currentCell.IsVisible;
+                }
             }
             else
             {
