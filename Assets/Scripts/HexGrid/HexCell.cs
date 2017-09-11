@@ -42,6 +42,8 @@ public class HexCell : MonoBehaviour, IHeapItem<HexCell>
         }
     }
 
+    public bool isRevealed = false;
+
     Player player;
 
     public HexCoordinates coordinates;
@@ -76,7 +78,11 @@ public class HexCell : MonoBehaviour, IHeapItem<HexCell>
         set
         {
             type = value;
-            if (isVisible)
+            if (!isRevealed)
+            {
+                colour = Color.white;
+            }
+            else if (isVisible)
             {
                 colour = value.colour;
             }

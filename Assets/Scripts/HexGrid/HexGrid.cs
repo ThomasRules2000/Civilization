@@ -47,15 +47,13 @@ public class HexGrid : MonoBehaviour
 
     HexType[,] map;
 
-    FOWManager fowManager;
-
     //HexMesh hexMesh;
     void Awake()
     {
         //Error Checks
         if (fractionForest + fractionDesert > 1)
         {
-            throw new System.Exception("Total Fractions of Tiles must be less than 1!");
+            throw new System.Exception("Total Fractions of Types must be less than 1!");
         }
         if (numCivs > Civilizations.defaultCivsLength)
         {
@@ -71,9 +69,6 @@ public class HexGrid : MonoBehaviour
 
         width = chunkCountX * HexMetrics.chunkSizeX;
         height = chunkCountZ * HexMetrics.chunkSizeZ;
-
-        fowManager = FOWManager.Instance;
-        fowManager.SetQuadSize(width, height);
 
         chunks = new HexGridChunk[chunkCountX, chunkCountZ];
         cells = new HexCell[width,height];
@@ -136,11 +131,6 @@ public class HexGrid : MonoBehaviour
         }
     }
 
-    /*void Start()
-    {
-        hexMesh.Triangulate(cells);
-    }*/
-
     public int MaxSize
     {
         get
@@ -164,7 +154,6 @@ public class HexGrid : MonoBehaviour
         pos.z = z * HexMetrics.outerRad * 1.5f;
 
         HexCell cell = cells[x,z] = Instantiate<HexCell>(cellPrefab);
-        //cell.transform.SetParent(transform, false);
         cell.transform.localPosition = pos;
         cell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
         cell.name = "Hex Cell " + cell.coordinates.ToString();
@@ -177,12 +166,6 @@ public class HexGrid : MonoBehaviour
             cell.Type = HexType.types[HexType.typeKeys.ocean];
         }
         cell.isHill = isHill;
-
-
-
-        //cell.cloud = Instantiate<Cloud>(clouds[Random.Range(0, clouds.Count)]);
-        //cell.cloud.transform.SetParent(cell.transform);
-        //cell.cloud.transform.localPosition = new Vector3(0, cell.cloud.transform.localPosition.y, 0);
 
         /*if (showCoords)
         {
@@ -295,7 +278,7 @@ public class HexGrid : MonoBehaviour
                 cells[xVal, offsetCoords.Z].cloud.fadeOut = true;
             }
 
-            fowManager.RevealTile(coords);
+            cells[xVal, offsetCoords.Z].isRevealed = true;
         }
     }
 }
