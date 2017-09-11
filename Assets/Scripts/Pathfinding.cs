@@ -106,6 +106,12 @@ public class Pathfinding : MonoBehaviour {
         return path;
     }
 
+    /// <summary>
+    /// Gets minimum distance between 2 nodes on a hex grid
+    /// </summary>
+    /// <param name="nodeA"></param>
+    /// <param name="nodeB"></param>
+    /// <returns></returns>
     static float GetDistance(HexCoordinates nodeA, HexCoordinates nodeB)
     {
         int xDiff = Mathf.Min(Mathf.Abs(nodeA.X - nodeB.X), Mathf.Abs(nodeA.X - nodeB.X - grid.width), Mathf.Abs(nodeA.X - nodeB.X + grid.width));

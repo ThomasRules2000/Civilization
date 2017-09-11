@@ -29,6 +29,9 @@ public class HexType
         tundra
     }
 
+    /// <summary>
+    /// A dictionary of all types a tile can be
+    /// </summary>
     public static Dictionary<typeKeys, HexType> types = new Dictionary<typeKeys, HexType> //Todo - add more tile types
     {
         { typeKeys.plains,  new HexType(Color.green, new Color(0, 0.8f, 0),  1, false) },

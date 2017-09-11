@@ -47,6 +47,8 @@ public class HexGrid : MonoBehaviour
 
     HexType[,] map;
 
+    FOWManager fowManager;
+
     //HexMesh hexMesh;
     void Awake()
     {
@@ -69,6 +71,9 @@ public class HexGrid : MonoBehaviour
 
         width = chunkCountX * HexMetrics.chunkSizeX;
         height = chunkCountZ * HexMetrics.chunkSizeZ;
+
+        fowManager = FOWManager.Instance;
+        fowManager.SetQuadSize(width, height);
 
         chunks = new HexGridChunk[chunkCountX, chunkCountZ];
         cells = new HexCell[width,height];
@@ -144,7 +149,13 @@ public class HexGrid : MonoBehaviour
         }
     }
 
-    //Adds cells to array based on metrics, max width & max height
+    /// <summary>
+    /// Adds cells to array based on metrics, max width & max height
+    /// </summary>
+    /// <param name="x">X coord of cell in array</param>
+    /// <param name="z">Z coord of cell in array</param>
+    /// <param name="type"></param>
+    /// <param name="isHill"></param>
     void CreateCell(int x, int z, HexType type, bool isHill)
     {
         Vector3 pos;
@@ -167,9 +178,11 @@ public class HexGrid : MonoBehaviour
         }
         cell.isHill = isHill;
 
-        cell.cloud = Instantiate<Cloud>(clouds[Random.Range(0, clouds.Count)]);
-        cell.cloud.transform.SetParent(cell.transform);
-        cell.cloud.transform.localPosition = new Vector3(0, cell.cloud.transform.localPosition.y, 0);
+
+
+        //cell.cloud = Instantiate<Cloud>(clouds[Random.Range(0, clouds.Count)]);
+        //cell.cloud.transform.SetParent(cell.transform);
+        //cell.cloud.transform.localPosition = new Vector3(0, cell.cloud.transform.localPosition.y, 0);
 
         /*if (showCoords)
         {
@@ -193,6 +206,11 @@ public class HexGrid : MonoBehaviour
         chunk.AddCell(localX, localZ, cell);
     }
 
+    /// <summary>
+    /// Updates the drawn line showing the current unit's path
+    /// </summary>
+    /// <param name="path"></param>
+    /// <param name="currentCell">Cell the unit is in</param>
     public void UpdateLine(List<HexCell> path, HexCell currentCell)
     {
         if(path == null)
@@ -276,6 +294,8 @@ public class HexGrid : MonoBehaviour
                 Destroy(cells[xVal, offsetCoords.Z].cloud.gameObject, cloudFadeTime);
                 cells[xVal, offsetCoords.Z].cloud.fadeOut = true;
             }
+
+            fowManager.RevealTile(coords);
         }
     }
 }

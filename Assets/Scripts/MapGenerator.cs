@@ -4,7 +4,26 @@ using System.Linq;
 using UnityEngine;
 
 public static class MapGenerator {
-
+    /// <summary>
+    /// Generates the map and returns an array of HexTypes
+    /// </summary>
+    /// <param name="width">in tiles</param>
+    /// <param name="height">in tiles</param>
+    /// <param name="islandSizeMin">Min tiles for island</param>
+    /// <param name="islandSizeMax">Max ties for island</param>
+    /// <param name="numIslands">Number of islands to generate</param>
+    /// <param name="fractionHills"></param>
+    /// <param name="fractionForest"></param>
+    /// <param name="forestSizeMin">Min tiles for forests</param>
+    /// <param name="forestSizeMax">Max tiles for forests</param>
+    /// <param name="fractionDesert"></param>
+    /// <param name="desertSizeMin">Min tiles for deserts</param>
+    /// <param name="desertSizeMax">Max tiles for deserts</param>
+    /// <param name="tundraHeight">How many tiles from top and bottom</param>
+    /// <param name="numCivs"></param>
+    /// <param name="civStartPoints">Returned starting positions</param>
+    /// <param name="hillCoords">Returned coords for hills</param>
+    /// <returns></returns>
     public static HexType[,] GenerateMap(int width, int height, int islandSizeMin, int islandSizeMax, int numIslands, float fractionHills, float fractionForest, int forestSizeMin, int forestSizeMax, float fractionDesert, int desertSizeMin, int desertSizeMax, int tundraHeight, int numCivs, out List<HexCoordinates> civStartPoints, out List<HexCoordinates> hillCoords)
     {
         HexType[,] map = new HexType[width, height];
@@ -146,7 +165,20 @@ public static class MapGenerator {
 
         return map;
     }
-
+    /// <summary>
+    /// Generates zones such as forests and deserts
+    /// </summary>
+    /// <param name="mapOut">The updated map</param>
+    /// <param name="width">in tiles</param>
+    /// <param name="height">in tiles</param>
+    /// <param name="type">of tile</param>
+    /// <param name="fractionType"></param>
+    /// <param name="typeSizeMin">Min tiles per area</param>
+    /// <param name="typeSizeMax">Max tiles per area</param>
+    /// <param name="numAllIslandTiles"></param>
+    /// <param name="allIslandTiles"></param>
+    /// <param name="map">input map</param>
+    /// <returns></returns>
     static HashSet<HexCoordinates> GenerateZones(out HexType[,] mapOut, int width, int height, HexType.typeKeys type, float fractionType, int typeSizeMin, int typeSizeMax, int numAllIslandTiles, HashSet<HexCoordinates> allIslandTiles, HexType[,] map)
     {
         mapOut = map;
