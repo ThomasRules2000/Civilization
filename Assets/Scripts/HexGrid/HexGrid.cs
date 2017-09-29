@@ -121,8 +121,7 @@ public class HexGrid : MonoBehaviour
             {
                 player.unit = unit;
                 player.PlayerCivilization = unit.UnitCivilization;
-                RevealMap(cell.coordinates, 3);
-                
+                RevealMap(cell.coordinates, 3);     
             }
             else
             {
@@ -270,12 +269,6 @@ public class HexGrid : MonoBehaviour
             else if (xVal < 0)
             {
                 xVal += width;
-            }
-
-            if (cells[xVal, offsetCoords.Z].cloud)
-            {
-                Destroy(cells[xVal, offsetCoords.Z].cloud.gameObject, cloudFadeTime);
-                cells[xVal, offsetCoords.Z].cloud.fadeOut = true;
             }
 
             cells[xVal, offsetCoords.Z].isRevealed = true;

@@ -15,6 +15,8 @@ public class CameraRig : MonoBehaviour {
     public float camTranslationSpeed = 20;
     public float mouseScrollArea = 20;
 
+    float fov = 60;
+
     float rotationStep;
 
     public Player player;
@@ -24,6 +26,8 @@ public class CameraRig : MonoBehaviour {
     void Start ()
     {
         cameras = GetComponentsInChildren<Camera>();
+
+        cameras[0].fieldOfView = cameras[1].fieldOfView = cameras[2].fieldOfView = fov;
 
         rotationStep = zoomSpeed * (topRotation - bottomRotation) / (maxZoomedOut - maxZoomedIn);
         transform.position = new Vector3(player.unit.transform.position.x, maxZoomedIn, player.unit.transform.position.z - (maxZoomedIn / Mathf.Tan(Mathf.Deg2Rad * bottomRotation)));
