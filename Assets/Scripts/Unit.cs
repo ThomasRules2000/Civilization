@@ -15,6 +15,8 @@ public class Unit : MonoBehaviour {
 
     public Renderer renderer;
 
+    public MinimapCamera minimapCamera;
+
     public bool IsVisible
     {
         get
@@ -59,6 +61,7 @@ public class Unit : MonoBehaviour {
         grid = GetComponentInParent<HexGrid>();
         player = GetComponentInParent<Player>();
         renderer = GetComponent<Renderer>();
+        minimapCamera = grid.minimapCamera;
     }
 	
 	// Update is called once per frame
@@ -71,72 +74,9 @@ public class Unit : MonoBehaviour {
             {
                 if(civ == player.PlayerCivilization)
                 {
-                    List<HexGridChunk> toUpdate = new List<HexGridChunk>();
+                    UpdateVisiblility(currentCell.coordinates, transform.position, 3);
 
-                    foreach (HexCoordinates coords in HexCoordinates.GetNTileRad(currentCell.coordinates, 3))
-                    {
-                        HexCoordinates offsetCoords = HexCoordinates.ToOffsetCoordinates(coords);
-
-                        if (offsetCoords.Z < 0 || offsetCoords.Z >= grid.height)
-                        {
-                            continue;
-                        }
-                        int xVal = offsetCoords.X;
-
-                        if (xVal < 0)
-                        {
-                            xVal += grid.width;
-                        }
-                        else if(xVal >= grid.width)
-                        {
-                            xVal -= grid.width;
-                        }
-
-                        grid.cells[xVal, offsetCoords.Z].IsVisible = false;
-                        if (!toUpdate.Contains(grid.cells[xVal, coords.Z].chunk))
-                        {
-                            toUpdate.Add(grid.cells[xVal, coords.Z].chunk);
-                        }
-                    }
-
-                    grid.RevealMap(HexCoordinates.FromPosition(transform.position), 3);
-
-                    HexCoordinates currentPos = HexCoordinates.FromPosition(transform.position);
-
-                    foreach (HexCoordinates coords in HexCoordinates.GetNTileRad(currentPos, 3))
-                    {
-                        HexCoordinates offsetCoords = HexCoordinates.ToOffsetCoordinates(coords);
-
-                        if (offsetCoords.Z < 0 || offsetCoords.Z >= grid.height)
-                        {
-                            continue;
-                        }
-                        int xVal = offsetCoords.X;
-
-                        if (xVal < 0)
-                        {
-                            xVal += grid.width;
-                        }
-                        else if (xVal >= grid.width)
-                        {
-                            xVal -= grid.width;
-                        }
-
-                        grid.cells[xVal, offsetCoords.Z].IsVisible = true;
-                        if (!toUpdate.Contains(grid.cells[xVal, coords.Z].chunk))
-                        {
-                            toUpdate.Add(grid.cells[xVal, coords.Z].chunk);
-                        }
-                    }
-
-                    HexCoordinates offsetPos = HexCoordinates.ToOffsetCoordinates(currentPos);
-
-                    grid.cells[offsetPos.X, offsetPos.Z].IsVisible = true;
-
-                    foreach(HexGridChunk chunk in toUpdate)
-                    {
-                        chunk.Refresh();
-                    }
+                    
                 }
 
                 canMoveThisTurn -= path[0].Type.movementCost;
@@ -211,6 +151,88 @@ public class Unit : MonoBehaviour {
         if(player.unit == this)
         {
             grid.UpdateLine(path, grid.cells[currentCoords.X, currentCoords.Z]);
+        }
+    }
+
+    public void UpdateVisiblility(HexCoordinates coordinates, Vector3 position, int radius)
+    {
+        List<HexGridChunk> toUpdate = new List<HexGridChunk>();
+
+        int xMin = int.MaxValue, xMax = 0, zMin = int.MaxValue, zMax = 0;
+
+        foreach (HexCoordinates coords in HexCoordinates.GetNTileRad(coordinates, radius))
+        {
+            HexCoordinates offsetCoords = HexCoordinates.ToOffsetCoordinates(coords);
+
+            if (offsetCoords.Z < 0 || offsetCoords.Z >= grid.height)
+            {
+                continue;
+            }
+            int xVal = offsetCoords.X;
+
+            if (xVal < 0)
+            {
+                xVal += grid.width;
+            }
+            else if (xVal >= grid.width)
+            {
+                xVal -= grid.width;
+            }
+
+            grid.cells[xVal, offsetCoords.Z].IsVisible = false;
+            if (!toUpdate.Contains(grid.cells[xVal, coords.Z].chunk))
+            {
+                toUpdate.Add(grid.cells[xVal, coords.Z].chunk);
+            }
+        }
+
+        HexCoordinates currentPos = HexCoordinates.FromPosition(position);
+
+        foreach (HexCoordinates coords in HexCoordinates.GetNTileRad(currentPos, 3))
+        {
+            HexCoordinates offsetCoords = HexCoordinates.ToOffsetCoordinates(coords);
+
+            if (offsetCoords.Z < 0 || offsetCoords.Z >= grid.height)
+            {
+                continue;
+            }
+            int xVal = offsetCoords.X;
+
+            if (xVal < 0)
+            {
+                xVal += grid.width;
+            }
+            else if (xVal >= grid.width)
+            {
+                xVal -= grid.width;
+            }
+
+            grid.cells[xVal, offsetCoords.Z].IsVisible = true;
+
+            xMin = Mathf.Min(xMin, xVal);
+            xMax = Mathf.Max(xMax, xVal);
+            zMin = Mathf.Min(zMin, offsetCoords.Z);
+            zMax = Mathf.Max(zMax, offsetCoords.Z);
+
+            if (!toUpdate.Contains(grid.cells[xVal, coords.Z].chunk))
+            {
+                toUpdate.Add(grid.cells[xVal, coords.Z].chunk);
+            }
+        }
+
+        HexCoordinates offsetPos = HexCoordinates.ToOffsetCoordinates(currentPos);
+
+        grid.cells[offsetPos.X, offsetPos.Z].IsVisible = true;
+
+        minimapCamera.XMinimum = xMin;
+        minimapCamera.XMaximum = xMax;
+        minimapCamera.ZMinimum = zMin;
+        minimapCamera.ZMaximum = zMax;
+        minimapCamera.UpdatePosition();
+
+        foreach (HexGridChunk chunk in toUpdate)
+        {
+            chunk.Refresh();
         }
     }
 }

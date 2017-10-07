@@ -47,6 +47,8 @@ public class HexGrid : MonoBehaviour
 
     HexType[,] map;
 
+    public MinimapCamera minimapCamera;
+
     //HexMesh hexMesh;
     void Awake()
     {
@@ -121,6 +123,7 @@ public class HexGrid : MonoBehaviour
             {
                 player.unit = unit;
                 player.PlayerCivilization = unit.UnitCivilization;
+                unit.UpdateVisiblility(new HexCoordinates(0,0), unit.transform.position, 3);
                 RevealMap(cell.coordinates, 3);     
             }
             else
@@ -245,12 +248,9 @@ public class HexGrid : MonoBehaviour
 
     public void RevealMap(HexCoordinates centreCoords, int radius)
     {
-        HexCoordinates offsetCentreCoords = HexCoordinates.ToOffsetCoordinates(centreCoords);
+        List<HexGridChunk> toUpdate = new List<HexGridChunk>();
 
-        if(cells[offsetCentreCoords.X, offsetCentreCoords.Z].cloud)
-        {
-            Destroy(cells[offsetCentreCoords.X, offsetCentreCoords.Z].cloud.gameObject);
-        }
+        HexCoordinates offsetCentreCoords = HexCoordinates.ToOffsetCoordinates(centreCoords);
 
         foreach (HexCoordinates coords in HexCoordinates.GetNTileRad(centreCoords, radius))
         {
@@ -271,7 +271,16 @@ public class HexGrid : MonoBehaviour
                 xVal += width;
             }
 
-            cells[xVal, offsetCoords.Z].isRevealed = true;
+            cells[xVal, offsetCoords.Z].IsVisible = true;
+            if (!toUpdate.Contains(cells[xVal, offsetCoords.Z].chunk))
+            {
+                toUpdate.Add(cells[xVal, offsetCoords.Z].chunk);
+            }
+        }
+
+        foreach(HexGridChunk chunk in toUpdate)
+        {
+            chunk.Refresh();
         }
     }
 }
