@@ -68,7 +68,9 @@ public class MinimapCamera : MonoBehaviour {
     {
         camera = GetComponent<Camera>();
 
+        xMin = grid.width + 1;
         //xMax = grid.width - 1;
+        zMin = grid.height + 1;
         //zMax = grid.height - 1;
 
         UpdatePosition();

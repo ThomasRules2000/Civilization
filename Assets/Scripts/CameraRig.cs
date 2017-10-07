@@ -71,6 +71,13 @@ public class CameraRig : MonoBehaviour {
             vertAxis = Time.deltaTime * camTranslationSpeed * (transform.position.y - maxZoomedIn / 2);
         }
 
+        Debug.Log(transform.position.z + transform.position.y * Mathf.Tan((90 + (fov / 2) - transform.eulerAngles.x) * Mathf.Deg2Rad));
+        if ((transform.position.z + transform.position.y * Mathf.Tan((90 + (fov / 2) - transform.eulerAngles.x)*Mathf.Deg2Rad) > grid.height * HexMetrics.outerRad * 1.5 && vertAxis > 0)
+            || transform.position.z + HexMetrics.outerRad < transform.position.y * Mathf.Tan((transform.eulerAngles.x + (fov / 2) - 90) * Mathf.Deg2Rad) && vertAxis < 0)
+        {
+            vertAxis = 0;
+        }
+
         transform.Translate(horizAxis, 0f, vertAxis, Space.World);
 
         if(transform.position.x > grid.width * HexMetrics.innerRad * 2f)
