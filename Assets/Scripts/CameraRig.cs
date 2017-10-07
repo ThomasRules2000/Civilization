@@ -15,12 +15,15 @@ public class CameraRig : MonoBehaviour {
     public float camTranslationSpeed = 20;
     public float mouseScrollArea = 20;
 
+    public int allowedOutside = 2;
+
     float fov = 60;
 
     float rotationStep;
 
     public Player player;
     public HexGrid grid;
+    public MinimapCamera minimapCamera;
 
     // Use this for initialization
     void Start ()
@@ -72,8 +75,8 @@ public class CameraRig : MonoBehaviour {
         }
 
         Debug.Log(transform.position.z + transform.position.y * Mathf.Tan((90 + (fov / 2) - transform.eulerAngles.x) * Mathf.Deg2Rad));
-        if ((transform.position.z + transform.position.y * Mathf.Tan((90 + (fov / 2) - transform.eulerAngles.x)*Mathf.Deg2Rad) > grid.height * HexMetrics.outerRad * 1.5 && vertAxis > 0)
-            || transform.position.z + HexMetrics.outerRad < transform.position.y * Mathf.Tan((transform.eulerAngles.x + (fov / 2) - 90) * Mathf.Deg2Rad) && vertAxis < 0)
+        if ((transform.position.z + transform.position.y * Mathf.Tan((90 + (fov / 2) - transform.eulerAngles.x)*Mathf.Deg2Rad) > Mathf.Min(minimapCamera.ZMaximum + allowedOutside + 1, grid.height) * HexMetrics.outerRad * 1.5 && vertAxis > 0)
+            || transform.position.z + HexMetrics.outerRad - transform.position.y * Mathf.Tan((transform.eulerAngles.x + (fov / 2) - 90) * Mathf.Deg2Rad) < Mathf.Max(minimapCamera.ZMinimum - allowedOutside, -1) * HexMetrics.outerRad * 1.5 && vertAxis < 0)
         {
             vertAxis = 0;
         }
