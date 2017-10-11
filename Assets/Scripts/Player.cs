@@ -14,7 +14,9 @@ public class Player : MonoBehaviour {
     public CameraRig cameraRig;
 
     public Unit unit;
-    List<Unit> units = new List<Unit>();
+    public List<Unit> units = new List<Unit>();
+
+    public List<City> cities = new List<City>();
 
     Civilization civ;
     public Civilization PlayerCivilization
@@ -33,7 +35,7 @@ public class Player : MonoBehaviour {
     private void Start()
     {
         unit = GetComponentInChildren<Unit>();
-        units.AddRange(GetComponentsInChildren<Unit>());
+        //units.AddRange(GetComponentsInChildren<Unit>());
 
         grid = GetComponent<HexGrid>();
 

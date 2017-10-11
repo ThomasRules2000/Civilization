@@ -40,6 +40,8 @@ public class HexGrid : MonoBehaviour
     public List<Civilization> civsInGame = new List<Civilization>();
     public Unit defaultUnit;
 
+    public City defaultCity;
+
     public HexCell cellPrefab;
 
     public HexCell[,] cells;
@@ -103,7 +105,7 @@ public class HexGrid : MonoBehaviour
             }
         }
 
-        for(int i = 0; i < numCivs; i++)
+        for(int i = 0; i <= numCivs; i++)
         {
             HexCell cell = cells[civStartPoints[i].X, civStartPoints[i].Z];
             Vector3 cellPos = cell.transform.position;
@@ -123,13 +125,14 @@ public class HexGrid : MonoBehaviour
             {
                 player.unit = unit;
                 player.PlayerCivilization = unit.UnitCivilization;
-                unit.UpdateVisiblility(new HexCoordinates(0,0), unit.transform.position, 3);
+                //unit.UpdateVisiblility(new HexCoordinates(5,5), unit.transform.position, 3);
                 RevealMap(cell.coordinates, 3);     
             }
             else
             {
                 unit.gameObject.AddComponent<UnitAI>();
             }
+            Debug.Log("End of adding a Unit");
         }
     }
 

@@ -29,7 +29,8 @@ public class Unit : MonoBehaviour {
         }
     }
 
-    HexGrid grid;
+    public HexGrid grid;
+
     List<HexCell> path;
 
     Player player;
@@ -62,6 +63,8 @@ public class Unit : MonoBehaviour {
         player = GetComponentInParent<Player>();
         renderer = GetComponent<Renderer>();
         minimapCamera = grid.minimapCamera;
+
+        player.units.Add(this);
     }
 	
 	// Update is called once per frame
