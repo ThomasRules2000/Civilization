@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Unit : MonoBehaviour {
 
-    public float movementSpeed = 5;
+    public float movementSpeed = 50;
     public int tilesPerTurn = 3;
     public int canMoveThisTurn = 3;
     public bool moveUnit = false;

@@ -38,7 +38,7 @@ public class HexGrid : MonoBehaviour
 
     public int numCivs = 2;
     public List<Civilization> civsInGame = new List<Civilization>();
-    public Unit defaultUnit;
+    public Transform defaultUnit;
 
     public City defaultCity;
 
@@ -109,28 +109,29 @@ public class HexGrid : MonoBehaviour
         {
             HexCell cell = cells[civStartPoints[i].X, civStartPoints[i].Z];
             Vector3 cellPos = cell.transform.position;
-            Unit unit = Instantiate<Unit>(defaultUnit, cellPos + Vector3.up, Quaternion.identity, transform);
+            Transform unitTrans = Instantiate<Transform>(defaultUnit, cellPos + Vector3.up, Quaternion.identity, transform);
+            Settler settler = unitTrans.gameObject.AddComponent<Settler>();
             do
             {
-                unit.UnitCivilization = Civilizations.civs[Random.Range(0, Civilizations.defaultCivsLength)];
-            } while (civsInGame.Contains(unit.UnitCivilization));
-            civsInGame.Add(unit.UnitCivilization);
+                settler.UnitCivilization = Civilizations.civs[Random.Range(0, Civilizations.defaultCivsLength)];
+            } while (civsInGame.Contains(settler.UnitCivilization));
+            civsInGame.Add(settler.UnitCivilization);
 
-            Debug.Log(unit.UnitCivilization.ToString() + ": " + civStartPoints[i].ToString());
+            Debug.Log(settler.UnitCivilization.ToString() + ": " + civStartPoints[i].ToString());
 
-            unit.name = unit.UnitCivilization.Nationality + " Unit";
-            unit.currentCell = cell;
+            settler.name = settler.UnitCivilization.Nationality + " Settler";
+            settler.currentCell = cell;
 
             if(i == 0)
             {
-                player.unit = unit;
-                player.PlayerCivilization = unit.UnitCivilization;
+                player.unit = settler;
+                player.PlayerCivilization = settler.UnitCivilization;
                 //unit.UpdateVisiblility(new HexCoordinates(5,5), unit.transform.position, 3);
                 RevealMap(cell.coordinates, 3);     
             }
             else
             {
-                unit.gameObject.AddComponent<UnitAI>();
+                settler.gameObject.AddComponent<UnitAI>();
             }
             Debug.Log("End of adding a Unit");
         }
