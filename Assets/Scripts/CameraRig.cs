@@ -48,7 +48,7 @@ public class CameraRig : MonoBehaviour {
         cameras[2].transform.localPosition = Vector3.right * grid.width * HexMetrics.innerRad * 2;
         cameras[2].transform.localRotation = Quaternion.identity;
 
-        float horizFov = 2 * Mathf.Atan(Mathf.Tan(fov * Mathf.Deg2Rad / 2) * cameras[0].aspect);
+        horizFov = 2 * Mathf.Atan(Mathf.Tan(fov * Mathf.Deg2Rad / 2) * cameras[0].aspect);
     }
 	
 	// Update is called once per frame

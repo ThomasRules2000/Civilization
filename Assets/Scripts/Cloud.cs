@@ -6,7 +6,7 @@ public class Cloud : MonoBehaviour {
 
     public bool fadeOut = false;
     HexGrid grid;
-    Renderer renderer;
+    new Renderer renderer;
     float alphaPerSecond;
 
     void Start()

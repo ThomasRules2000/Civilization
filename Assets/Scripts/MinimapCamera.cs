@@ -59,7 +59,7 @@ public class MinimapCamera : MonoBehaviour {
         }
     }
 
-    Camera camera;
+    new Camera camera;
 
     Vector3 targetPos = Vector3.zero;
 

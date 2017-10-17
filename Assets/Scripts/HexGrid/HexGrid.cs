@@ -133,7 +133,6 @@ public class HexGrid : MonoBehaviour
             {
                 settler.gameObject.AddComponent<UnitAI>();
             }
-            Debug.Log("End of adding a Unit");
         }
     }
 
@@ -253,8 +252,6 @@ public class HexGrid : MonoBehaviour
     public void RevealMap(HexCoordinates centreCoords, int radius)
     {
         List<HexGridChunk> toUpdate = new List<HexGridChunk>();
-
-        HexCoordinates offsetCentreCoords = HexCoordinates.ToOffsetCoordinates(centreCoords);
 
         foreach (HexCoordinates coords in HexCoordinates.GetNTileRad(centreCoords, radius))
         {

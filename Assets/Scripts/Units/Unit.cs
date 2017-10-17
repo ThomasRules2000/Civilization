@@ -16,7 +16,7 @@ public class Unit : MonoBehaviour {
 
     public List<UnityAction> actions = new List<UnityAction>();
 
-    public Renderer renderer;
+    new public Renderer renderer;
 
     public MinimapCamera minimapCamera;
 
@@ -60,7 +60,7 @@ public class Unit : MonoBehaviour {
     }
 
 	// Use this for initialization
-	protected void Start ()
+	protected void Start()
     {
         grid = GetComponentInParent<HexGrid>();
         player = GetComponentInParent<Player>();
@@ -72,7 +72,7 @@ public class Unit : MonoBehaviour {
 	
 	// Update is called once per frame
 
-	public void Update()
+	void Update()
     {
         if (path != null && path.Count != 0 && canMoveThisTurn > 0 && moveUnit) //Follow Path
         {

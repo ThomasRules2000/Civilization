@@ -5,13 +5,13 @@ using UnityEngine.Events;
 
 public class Settler : Unit
 {
-    void Start()
+    new void Start()
     {
         base.Start();
-        actions.Add(new UnityAction(BuildCity));
+        actions.Add(new UnityAction(Settle));
     }
 
-    public void BuildCity()
+    public void Settle()
     {
         Vector3 pos = currentCell.transform.position;
         if (currentCell.isHill)
