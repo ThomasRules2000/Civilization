@@ -20,5 +20,6 @@ public class Settler : Unit
         }
 
         Instantiate(grid.defaultCity, pos, Quaternion.identity);
+        Destroy(this.transform);
     }
 }

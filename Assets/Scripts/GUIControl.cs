@@ -11,15 +11,9 @@ public class GUIControl : MonoBehaviour {
     public Button defaultButton;
     List<Button> buttons;
 
-	// Use this for initialization
-	void Start ()
+    public void updateButtons(List<UnityAction> actions)
     {
-
-	}
-	
-    void updateButtons(List<UnityAction> actions)
-    {
-        while(buttons.Count > 0)
+        while(buttons != null && buttons.Count > 0)
         {
             Button btn = buttons[0];
             Destroy(btn);
@@ -32,6 +26,7 @@ public class GUIControl : MonoBehaviour {
             for(int j = 0; j < Mathf.CeilToInt((float)actions.Count / lines) && i * lines + j < actions.Count; j++)
             {
                 Button button = Instantiate<Button>(defaultButton, new Vector3(i,j), Quaternion.identity, transform);
+                GUIText text = button.GetComponentInChildren<GUIText>();
                 button.onClick.AddListener(actions[i*lines + j]);
             }
         }

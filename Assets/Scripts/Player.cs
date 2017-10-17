@@ -11,6 +11,7 @@ public class Player : MonoBehaviour {
 
     HexGrid grid;
 
+    public GUIControl guiControl;
     public CameraRig cameraRig;
 
     public Unit unit;
@@ -32,7 +33,7 @@ public class Player : MonoBehaviour {
         }
     }
 
-    private void Start()
+    void Start()
     {
         unit = GetComponentInChildren<Unit>();
         //units.AddRange(GetComponentsInChildren<Unit>());
@@ -42,7 +43,7 @@ public class Player : MonoBehaviour {
         turnCounterText.text = "Turn: " + turnNo;       
     }
 
-    void Update ()
+    void Update()
     {
         //Space Next Turn
         if (Input.GetKeyDown(KeyCode.Space))
@@ -69,6 +70,7 @@ public class Player : MonoBehaviour {
             {
                 HexCoordinates currentPos = HexCoordinates.ToOffsetCoordinates(HexCoordinates.FromPosition(unit.transform.position));
                 grid.UpdateLine(unit.Path, grid.cells[currentPos.X, currentPos.Z]);
+                guiControl.updateButtons(unit.actions);
             }
         }
 
