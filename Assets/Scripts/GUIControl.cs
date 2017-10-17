@@ -9,14 +9,14 @@ public class GUIControl : MonoBehaviour {
     public int rightBuffer = 150; //Right buffer in pixels (due to minimap)
     public int buttonWidth = 50; //Width in pixels
     public Button defaultButton;
-    List<Button> buttons;
+    List<Button> buttons = new List<Button>();
 
-    public void updateButtons(List<UnityAction> actions)
+    public void updateButtons(List<UnityAction> actions, List<string> actionNames)
     {
         while(buttons != null && buttons.Count > 0)
         {
             Button btn = buttons[0];
-            Destroy(btn);
+            Destroy(btn.gameObject);
             buttons.Remove(btn);
         }
 
@@ -26,7 +26,9 @@ public class GUIControl : MonoBehaviour {
             for(int j = 0; j < Mathf.CeilToInt((float)actions.Count / lines) && i * lines + j < actions.Count; j++)
             {
                 Button button = Instantiate<Button>(defaultButton, new Vector3(i,j), Quaternion.identity, transform);
-                GUIText text = button.GetComponentInChildren<GUIText>();
+                buttons.Add(button);
+                Text text = button.GetComponentInChildren<Text>();
+                text.text = actionNames[i*lines + j];
                 button.onClick.AddListener(actions[i*lines + j]);
             }
         }

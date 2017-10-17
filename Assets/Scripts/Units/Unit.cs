@@ -15,6 +15,7 @@ public class Unit : MonoBehaviour {
     public HexCell currentCell;
 
     public List<UnityAction> actions = new List<UnityAction>();
+    public List<string> actionNames = new List<string>();
 
     new public Renderer renderer;
 

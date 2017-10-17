@@ -9,17 +9,21 @@ public class Settler : Unit
     {
         base.Start();
         actions.Add(new UnityAction(Settle));
+        actionNames.Add("Settle");
     }
 
     public void Settle()
     {
         Vector3 pos = currentCell.transform.position;
-        if (currentCell.isHill)
+        if (!currentCell.Type.isWater)
         {
-            pos += Vector3.up * HexMetrics.hillHeight;
-        }
+            if (currentCell.isHill)
+            {
+                pos += Vector3.up * HexMetrics.hillHeight;
+            }
 
-        Instantiate(grid.defaultCity, pos, Quaternion.identity);
-        Destroy(this.transform);
+            Instantiate(grid.defaultCity, pos, Quaternion.Euler(-90,0,0));
+            Destroy(this.gameObject);
+        } 
     }
 }

@@ -70,7 +70,7 @@ public class Player : MonoBehaviour {
             {
                 HexCoordinates currentPos = HexCoordinates.ToOffsetCoordinates(HexCoordinates.FromPosition(unit.transform.position));
                 grid.UpdateLine(unit.Path, grid.cells[currentPos.X, currentPos.Z]);
-                guiControl.updateButtons(unit.actions);
+                guiControl.updateButtons(unit.actions, unit.actionNames);
             }
         }
 
