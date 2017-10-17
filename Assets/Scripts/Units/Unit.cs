@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Unit : MonoBehaviour {
 
@@ -12,6 +13,8 @@ public class Unit : MonoBehaviour {
     public bool isMilitary = false;
     Civilization civ;
     public HexCell currentCell;
+
+    public List<UnityAction> actions = new List<UnityAction>();
 
     public Renderer renderer;
 
@@ -57,7 +60,7 @@ public class Unit : MonoBehaviour {
     }
 
 	// Use this for initialization
-	void Start ()
+	protected void Start ()
     {
         grid = GetComponentInParent<HexGrid>();
         player = GetComponentInParent<Player>();
@@ -78,8 +81,6 @@ public class Unit : MonoBehaviour {
                 if(civ == player.PlayerCivilization)
                 {
                     UpdateVisiblility(currentCell.coordinates, transform.position, 3);
-
-                    
                 }
 
                 canMoveThisTurn -= path[0].Type.movementCost;
