@@ -22,7 +22,9 @@ public class Settler : Unit
                 pos += Vector3.up * HexMetrics.hillHeight;
             }
 
-            Instantiate(grid.defaultCity, pos, Quaternion.Euler(-90,0,0));
+            City city = Instantiate(grid.defaultCity, pos, Quaternion.Euler(-90,0,0));
+            city.currentOwner = city.originalOwner = UnitCivilization;
+            city.Name = "A City";
             Destroy(this.gameObject);
         } 
     }
