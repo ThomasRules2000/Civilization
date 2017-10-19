@@ -48,7 +48,7 @@ public class CameraRig : MonoBehaviour {
         cameras[2].transform.localPosition = Vector3.right * grid.width * HexMetrics.innerRad * 2;
         cameras[2].transform.localRotation = Quaternion.identity;
 
-        horizFov = 2 * Mathf.Atan(Mathf.Tan(fov * Mathf.Deg2Rad / 2) * cameras[0].aspect);
+        horizFov = Mathf.Atan(Mathf.Tan(fov * Mathf.Deg2Rad / 2) * cameras[0].aspect);
     }
 	
 	// Update is called once per frame
@@ -83,7 +83,7 @@ public class CameraRig : MonoBehaviour {
             vertAxis = 0;
         }
 
-        float xDist = transform.position.y * Mathf.Tan(horizFov / 2) / Mathf.Cos((transform.eulerAngles.x + (fov / 2) - 90) * Mathf.Deg2Rad);
+        float xDist = transform.position.y * Mathf.Tan(horizFov) / Mathf.Cos((transform.eulerAngles.x + (fov / 2) - 90) * Mathf.Deg2Rad);
         if((horizAxis < 0 && minimapCamera.XMinimum > allowedOutside && transform.position.x - xDist < (minimapCamera.XMinimum - allowedOutside) * HexMetrics.innerRad * 2)
             || (horizAxis > 0 && minimapCamera.XMaximum < grid.width - allowedOutside && transform.position.x + xDist > (minimapCamera.XMaximum + allowedOutside) * HexMetrics.innerRad * 2))
         {
