@@ -76,16 +76,22 @@ public class Player : MonoBehaviour {
 
         //Mouse Wheel Zoom
         float scrollAxis = Input.GetAxis("Mouse ScrollWheel");
+        float currentRot = 0;
         if (scrollAxis > 0f)
         {
-            cameraRig.ZoomIn();
+            currentRot = cameraRig.ZoomIn();
         }
         else if (scrollAxis < 0f)
         {
             //Zoom Out
-            cameraRig.ZoomOut();
+            currentRot = cameraRig.ZoomOut();
         }
-	}
+
+        foreach (City city in cities)
+        {
+            city.SetNameRotation(currentRot);
+        }
+    }
 
     public void NextTurn()
     {

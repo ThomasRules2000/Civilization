@@ -102,7 +102,7 @@ public class CameraRig : MonoBehaviour {
         }
     }
 
-    public void ZoomIn()
+    public float ZoomIn()
     {
         if (transform.position.y - zoomSpeed >= maxZoomedIn)
         {
@@ -117,23 +117,34 @@ public class CameraRig : MonoBehaviour {
             transform.Translate(new Vector3(camMovement.x, -zoomSpeed, camMovement.y), Space.World);
             transform.rotation = Quaternion.Euler(transform.eulerAngles.x - rotationStep, transform.eulerAngles.y, transform.eulerAngles.z);
         }
+        return transform.eulerAngles.x;
     }
 
-    public void ZoomOut()
+    public float ZoomOut()
     {
-        Vector2 camMovement = Vector2.zero;
+        float xDist = transform.position.y * Mathf.Tan(horizFov) / Mathf.Cos((transform.eulerAngles.x + (fov / 2) - 90) * Mathf.Deg2Rad);
 
-        RaycastHit hit;
-        if (Raycast(Input.mousePosition, out hit))
+        if (((transform.position.z + transform.position.y * Mathf.Tan((90 + (fov / 2) - transform.eulerAngles.x) * Mathf.Deg2Rad) < Mathf.Min(minimapCamera.ZMaximum + allowedOutside + 1, grid.height) * HexMetrics.outerRad * 1.5)
+            && transform.position.z + HexMetrics.outerRad - transform.position.y * Mathf.Tan((transform.eulerAngles.x + (fov / 2) - 90) * Mathf.Deg2Rad) > Mathf.Max(minimapCamera.ZMinimum - allowedOutside, -1) * HexMetrics.outerRad * 1.5)
+            || ((minimapCamera.XMinimum > allowedOutside && transform.position.x - xDist > (minimapCamera.XMinimum - allowedOutside) * HexMetrics.innerRad * 2)
+            && (minimapCamera.XMaximum < grid.width - allowedOutside && transform.position.x + xDist < (minimapCamera.XMaximum + allowedOutside) * HexMetrics.innerRad * 2)))
         {
-            camMovement = new Vector2((transform.position.x - hit.point.x) * zoomSpeed / panMult, (transform.position.z - hit.point.z) * zoomSpeed / panMult);
+            Vector2 camMovement = Vector2.zero;
+
+            RaycastHit hit;
+            if (Raycast(Input.mousePosition, out hit))
+            {
+                camMovement = new Vector2((transform.position.x - hit.point.x) * zoomSpeed / panMult, (transform.position.z - hit.point.z) * zoomSpeed / panMult);
+            }
+
+            if (transform.position.y + zoomSpeed <= maxZoomedOut)
+            {
+                transform.Translate(camMovement.x, +zoomSpeed, camMovement.y, Space.World);
+                transform.rotation = Quaternion.Euler(transform.eulerAngles.x + rotationStep, transform.eulerAngles.y, transform.eulerAngles.z);
+            }
         }
 
-        if (transform.position.y + zoomSpeed <= maxZoomedOut)
-        {
-            transform.Translate(camMovement.x, +zoomSpeed, camMovement.y, Space.World);
-            transform.rotation = Quaternion.Euler(transform.eulerAngles.x + rotationStep, transform.eulerAngles.y, transform.eulerAngles.z);
-        }
+        return transform.eulerAngles.x;
     }
 
     public bool Raycast(Vector3 mousePosition, out RaycastHit hit)

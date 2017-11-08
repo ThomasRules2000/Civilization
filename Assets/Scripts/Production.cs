@@ -4,14 +4,19 @@ using UnityEngine;
 
 public class Production : MonoBehaviour
 {
-    int requiredProduction;
-    int containedProduction;
+    public int requiredProduction;
+    public int containedProduction;
 
-    int ProductionRemaining
+    public int ProductionRemaining
     {
         get
         {
             return requiredProduction - containedProduction;
         }
+    }
+
+    public void Produce()
+    {
+        //Defined so can be used by UnitProduction and ImprovementProductions later
     }
 }
